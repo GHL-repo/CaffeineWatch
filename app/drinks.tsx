@@ -2,13 +2,7 @@ import { Text, View } from "react-native";
 
 export default function Profile() {
   return (
-    <View
-      style={{
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-      }}
-    >
+    <View className="flex-1 items-start justify-start bg-white p-10">
       
       <Text>Coffee          135ml   67mg </Text>
       <Text>Espresso        135ml   67mg </Text>
