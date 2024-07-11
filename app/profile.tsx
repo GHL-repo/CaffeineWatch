@@ -9,7 +9,7 @@ export default function Profile() {
         alignItems: "center",
       }}
     >
-      
+      <Text className="font-pblack">About</Text>      
       <Text>This is a profile</Text>
     </View>
   );
