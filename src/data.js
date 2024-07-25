@@ -19,6 +19,34 @@ export default {
     {
       "name": "Decaf",
       "mgPerCup": 5
-    }    
+    },
+    {
+      "name": "Test Coffee",
+      "mgPerCup": 69
+    },
+    {
+      "name": "Test Coffee",
+      "mgPerCup": 69
+    },
+    {
+      "name": "Test Coffee",
+      "mgPerCup": 69
+    },
+    {
+      "name": "Test Coffee",
+      "mgPerCup": 69
+    },
+    {
+      "name": "Test Coffee",
+      "mgPerCup": 69
+    },
+    {
+      "name": "Test Coffee",
+      "mgPerCup": 69
+    },
+    {
+      "name": "Test Coffee",
+      "mgPerCup": 69
+    },
   ]
 };
