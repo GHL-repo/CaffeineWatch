@@ -1,15 +1,23 @@
 import { Text, View } from "react-native";
+import data from "../src/data";
+import DrinksListEl from "@/components/DrinksListEl";
+import CustomButton from "@/components/CustomButton";
+
 
 export default function Profile() {
   return (
-    <View className="flex-1 items-start justify-start bg-white p-10">
-      
-      <Text>Coffee          135ml   67mg </Text>
-      <Text>Espresso        135ml   67mg </Text>
-      <Text>Monster Energy  135ml   67mg </Text>
-      <Text>Flat White      135ml   67mg </Text>
-      <Text>Cola            135ml   67mg </Text>
-
+    <View className="h-full bg-white p-10">
+      {
+        data.caffeineTypes.map( caffeineType => {
+          return (
+            <DrinksListEl 
+              key={caffeineType.id}
+              title={caffeineType["name"]}
+              mgPerCup={caffeineType["mgPerCup"]}
+            />
+          )
+        })
+      }
     </View>
   );
 }

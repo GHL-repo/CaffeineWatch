@@ -65,6 +65,7 @@ export default function Index() {
           data.caffeineTypes.map( caffeineType => {
             return (
               <CustomButton 
+                key={caffeineType.id}
                 title={caffeineType["name"]}
                 handlePress={onPress = () => setMgCount(prevMgCount => prevMgCount + caffeineType["mgPerCup"])}
                 containerStyles="h-20 p-2 w-20 mt-5"
