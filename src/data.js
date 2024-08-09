@@ -29,21 +29,6 @@ export default {
       "id": 5,
       "name": "Test Coffee",
       "mgPerCup": 69
-    },
-    {
-      "id": 6,
-      "name": "Test Coffee",
-      "mgPerCup": 69
-    },
-    {
-      "id": 7,
-      "name": "Test Coffee",
-      "mgPerCup": 69
-    },
-    {
-      "id": 8,
-      "name": "Test Coffee",
-      "mgPerCup": 69
     }
   ]
 };

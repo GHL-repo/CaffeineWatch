@@ -1,25 +1,49 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { Button, Text, View, Image, Pressable, ScrollView } from "react-native";
+import { Button, Text, View, Image, Pressable, ScrollView, TextInput, TouchableOpacity } from "react-native";
 import { Link } from "expo-router";
 import CustomButton from '@/components/CustomButton';
 import user from "../assets/icons/user.png";
 import coffee from "../assets/icons/coffee-shop.png";
 import graph from "../assets/images/graph.png";
 import data from "../src/data";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 
 export default function Index() {  
   const [mgCount, setMgCount] = useState(0);
-  const resetMgCount = () => setMgCount(0);
+  const resetMgCount = () => {setMgCount(0); storeMgData(0);}
 
+  const storeMgData = async (mgCount) => {
+    try {
+      await AsyncStorage.setItem("@mgCount", JSON.stringify(mgCount));
+    } catch (err) {
+      alert(err);
+    }
+  };
+
+  const getMgData = async () => {
+    try {
+      let mgCount = await AsyncStorage.getItem("@mgCount");
+      if (mgCount !== null) {
+        setMgCount(JSON.parse(mgCount));
+      }
+    } catch (err) {
+      alert(err);
+    }
+  };
+
+  useEffect(() => {
+    getMgData();
+  }, []);
 
   return (    
     <ScrollView>
     <View className="flex justify-start min-h-full bg-white p-10">
       <StatusBar style="auto" />      
       
-      <View className="flex flex-row justify-between h-[40px] mb-10">
+      <View className="flex flex-row justify-between h-[40px] mb-6">
         <Link className="" href="/profile" asChild>
           <Pressable>
             <Image 
@@ -40,17 +64,13 @@ export default function Index() {
         </Link>
       </View>
 
-      
 
-      <View className="flex justify-between flex-row">
-        
+      <View className="flex justify-between flex-row">        
         <Text className="font-pregular">Current caffeine amount: </Text>
         <Text className="font-pregular ml-12">{mgCount}mg</Text>       
       </View>
       <Text className="font-pregular">Avoid Caffeine after: 16:20</Text>
       
-
-
       <View className="w-full h-53 border border-gray-200 bg-black">
         <Image
           source={graph}
@@ -67,7 +87,10 @@ export default function Index() {
               <CustomButton 
                 key={caffeineType.id}
                 title={caffeineType["name"]}
-                handlePress={onPress = () => setMgCount(prevMgCount => prevMgCount + caffeineType["mgPerCup"])}
+                handlePress={onPress = () => {
+                  setMgCount(prevMgCount => prevMgCount + caffeineType["mgPerCup"]);
+                  storeMgData(mgCount + caffeineType["mgPerCup"]);
+                }}
                 containerStyles="h-20 p-2 w-20 mt-5"
               />
             )
@@ -81,7 +104,6 @@ export default function Index() {
         />
       </View>  
 
-      
     </View>
     </ScrollView>
   );
