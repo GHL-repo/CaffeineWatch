@@ -14,21 +14,22 @@ export default {
       "id": 2,
       "name": "Cappuccino",
       "mgPerCup": 27
-    },
-    {
-      "id": 3,
-      "name": "Instant Coffee",
-      "mgPerCup": 69
-    },
-    {
-      "id": 4,
-      "name": "Decaf",
-      "mgPerCup": 5
-    },
-    {
-      "id": 5,
-      "name": "Test Coffee",
-      "mgPerCup": 69
     }
+    // },
+    // {
+    //   "id": 3,
+    //   "name": "Instant Coffee",
+    //   "mgPerCup": 69
+    // },
+    // {
+    //   "id": 4,
+    //   "name": "Decaf",
+    //   "mgPerCup": 5
+    // },
+    // {
+    //   "id": 5,
+    //   "name": "Test Coffee",
+    //   "mgPerCup": 69
+    // }
   ]
 };

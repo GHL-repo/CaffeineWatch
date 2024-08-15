@@ -41,7 +41,7 @@ export default function Index() {
   return (    
     <ScrollView>
     <View className="flex justify-start min-h-full bg-white p-10">
-      <StatusBar style="auto" />      
+      <StatusBar style="auto"/>      
       
       <View className="flex flex-row justify-between h-[40px] mb-6">
         <Link className="" href="/profile" asChild>

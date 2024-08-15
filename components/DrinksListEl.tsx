@@ -1,21 +1,18 @@
-import { Text, View, Button, Image } from "react-native";
+import { Text, View, TouchableOpacity, Image } from "react-native";
 import edit from "../assets/icons/edit.png";
 import graph from "../assets/icons/trash.png";
 import coffee from "../assets/icons/coffee.png";
 
 
-const DrinksListEl = ({
-  title,
-  mgPerCup,
-  handlePress,
-  // containerStyles,
-  // textStyles,
-  // isLoading,
-}) => {
+export default function DrinksListEl ({
+  item,
+  handlePressEdit,
+  handlePressDelete
+}) {
   return (
     <View className="flex flex-row justify-between items-center mb-2 h-10">
       
-      <View className="flex flex-row justify-between items-center w-3/4 ml-2">
+      <View className="flex flex-row justify-between items-center w-3/4">
         <View className="flex flex-row mr-1">
           <Image             
             source={coffee}
@@ -23,34 +20,32 @@ const DrinksListEl = ({
             resizeMode="contain"
           />
           <Text className="text-primary font-psemibold text-sm ml-2">
-            {title}
+            {item.name}
           </Text>
         </View>
         
         <Text>
-          {mgPerCup} ml
+          {item.mgPerCup} mg
         </Text>
       </View>
       <View className="flex flex-row justify-between items-center">
-        <View className="mr-1">
-          <Image 
-            
+        <TouchableOpacity onPress={() => handlePressEdit(item.id)}>
+          <Image             
             source={edit}
-            className="w-[22px] h-[22px]"
+            className="w-[22px] h-[22px] mr-1"
             resizeMode="contain"
           />
-        </View>
-        <View className="ml-1">
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => handlePressDelete(item.id)}>
           <Image 
             source={graph}
-            className="w-[22px] h-[22px]"
+            className="w-[22px] h-[22px] ml-2"
             resizeMode="contain"
           />
-        </View>
+        </TouchableOpacity>
       </View>
     </View>
 
   );
 };
 
-export default DrinksListEl;
