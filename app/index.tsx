@@ -12,7 +12,32 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 export default function Index() {  
+  // TEST
+  const [myColor, setMyColor] = useState("white");
+
+  const storeColorData = async (myColor) => {
+    try {
+      await AsyncStorage.setItem("@color", JSON.stringify(myColor));
+    } catch (err) {
+      alert(err);
+    }
+  };
+
+  const getColorData = async () => {
+    try {
+      let myColor = await AsyncStorage.getItem("@color");
+      if (myColor !== null) {
+        setMyColor(JSON.parse(myColor));
+      }
+    } catch (err) {
+      alert(err);
+    }
+  };
+
+  // TSET
+
   const [mgCount, setMgCount] = useState(0);
+  const [cafTypes, setCafTypes] = useState();
   const resetMgCount = () => {setMgCount(0); storeMgData(0);}
 
   const storeMgData = async (mgCount) => {
@@ -34,8 +59,21 @@ export default function Index() {
     }
   };
 
+  const getCafData = async () => {
+    try {
+      let cafTypesStorage = await AsyncStorage.getItem("@cafTypesStorage");
+      if (cafTypesStorage !== null) {
+        setCafTypes(JSON.parse(cafTypesStorage));
+      }
+    } catch (err) {
+      alert(err);
+    }
+  };
+
   useEffect(() => {
     getMgData();
+    getColorData(); //TEST
+    // getCafData();
   }, []);
 
   return (    
@@ -97,12 +135,46 @@ export default function Index() {
           })
         }
 
+        {/* {
+          cafTypes.map( caffeineType => {
+            return (
+              <CustomButton 
+                key={caffeineType.id}
+                title={caffeineType["name"]}
+                handlePress={onPress = () => {
+                  setMgCount(prevMgCount => prevMgCount + caffeineType["mgPerCup"]);
+                  storeMgData(mgCount + caffeineType["mgPerCup"]);
+                }}
+                containerStyles="h-20 p-2 w-20 mt-5"
+              />
+            )
+          })
+        } */}
+        
         <CustomButton
           title="Reset"
           handlePress={resetMgCount}
           containerStyles="bg-blue-400 h-20 p-2 w-20 mt-5"
         />
       </View>  
+
+      <Text>{myColor}</Text>
+      <Button
+        onPress={() => {
+          setMyColor("red");
+          storeColorData(myColor);
+        }}
+        title="make red"
+        color="red"
+      />
+      <Button
+        onPress={() => {
+          setMyColor("blue");
+          storeColorData(myColor);
+        }}
+        title="make blue"
+        color="blue"
+      />
 
     </View>
     </ScrollView>

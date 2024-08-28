@@ -13,6 +13,7 @@ export default function Profile() {
   const [cafMg, setCafMg] = useState();
 
   const [modalOpen, setModalOpen] = useState(false);
+  const [editModalOpen, setEditModalOpen] = useState(false);
 
   const handleReset = () => {
     setCafTypes(prevCafTypes => data.caffeineTypes);
@@ -24,7 +25,7 @@ export default function Profile() {
       const cafId = cafTypes.length + Math.random();
       const newCafType = {id: cafId, name: cafName, mgPerCup: cafMg};
       setCafTypes(prevCafTypes => [...prevCafTypes, newCafType])
-      // storeCaffeineTypes(cafType);
+      // storeCaffeineTypes(cafTypes);
       console.log(cafMg);
     } else {
       Alert.alert("Oops","field cannot be empty");
@@ -77,6 +78,7 @@ export default function Profile() {
   };
   
   useEffect(() => {
+    handleReset();
     // getCaffeineTypes();
     // console.log(cafTypes)
   }, []);
@@ -94,8 +96,51 @@ export default function Profile() {
         onPress={() => setModalOpen(true)}
       />
       </View> 
-    
+  
     <Modal visible={modalOpen} animationType="slide" >
+    <View className="h-full bg-white p-8 mt-14">
+      <View className="mb-2 self-center">
+      <Ionicons 
+        name="close-circle-outline" size={32}
+        onPress={() => setModalOpen(false)}
+      />
+      </View > 
+      
+      <Text className='mt-8 self-center'>Why hello there! Please enter your drink:</Text>
+      <TextInput className='mt-2 p-1 pl-4 border'
+        onChangeText={handleNameChange}
+        value={cafName}
+        placeholder="Name of drink"
+        keyboardType="default"
+      />
+      <TextInput className='mb-4 p-1 pl-4 border'
+        onChangeText={handleMgChange}
+        value={cafMg}
+        placeholder="Mg of caffeine per cup"
+        keyboardType="numeric"
+      />
+
+      <Button
+        onPress={() => {
+          handleAddCafType();
+          setEditModalOpen(false);          
+        }}
+        title="Save"
+        color="#841584"
+      />
+
+      <Button
+        onPress={() => {
+          handleReset();
+          setEditModalOpen(false);
+        }}
+        title="Reset"
+        color="#151584"
+      />
+    </View>
+    </Modal> 
+
+    <Modal visible={editModalOpen} animationType="slide" >
     <View className="h-full bg-white p-8 mt-14">
       <View className="mb-2 self-center">
       <Ionicons 
@@ -137,9 +182,10 @@ export default function Profile() {
       />
     </View>
     </Modal> 
-    
     </View>
     
+ 
+
     
     <FlatList
       data={cafTypes}
@@ -148,7 +194,8 @@ export default function Profile() {
           keyExtractor={item => item.id}
           item={item}  
           handlePressEdit={handlePressEdit}
-          handlePressDelete={handlePressDelete}    
+          handlePressDelete={handlePressDelete}
+          setModalOpen={setModalOpen}    
         />)
       }
     />

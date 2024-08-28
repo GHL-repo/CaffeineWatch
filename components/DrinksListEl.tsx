@@ -7,7 +7,8 @@ import coffee from "../assets/icons/coffee.png";
 export default function DrinksListEl ({
   item,
   handlePressEdit,
-  handlePressDelete
+  handlePressDelete,
+  setModalOpen
 }) {
   return (
     <View className="flex flex-row justify-between items-center mb-2 h-10">
@@ -29,7 +30,7 @@ export default function DrinksListEl ({
         </Text>
       </View>
       <View className="flex flex-row justify-between items-center">
-        <TouchableOpacity onPress={() => handlePressEdit(item.id)}>
+        <TouchableOpacity onPress={() => {handlePressEdit(item.id); setModalOpen(true);}}>
           <Image             
             source={edit}
             className="w-[22px] h-[22px] mr-1"
