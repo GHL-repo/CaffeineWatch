@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useCallback} from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { Button, Text, View, Image, Pressable, ScrollView, TextInput, TouchableOpacity } from "react-native";
 import { Link } from "expo-router";
@@ -8,6 +8,8 @@ import coffee from "../assets/icons/coffee-shop.png";
 import graph from "../assets/images/graph.png";
 import data from "../src/data";
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useFocusEffect } from '@react-navigation/native';
+
 
 
 
@@ -15,9 +17,10 @@ export default function Index() {
   // TEST
   const [myColor, setMyColor] = useState("white");
 
-  const storeColorData = async (myColor) => {
+  const storeColorData = async (col) => {
+    setMyColor(col);
     try {
-      await AsyncStorage.setItem("@color", JSON.stringify(myColor));
+      await AsyncStorage.setItem("@color", JSON.stringify(col));
     } catch (err) {
       alert(err);
     }
@@ -41,6 +44,7 @@ export default function Index() {
   const resetMgCount = () => {setMgCount(0); storeMgData(0);}
 
   const storeMgData = async (mgCount) => {
+    setMgCount(mgCount)
     try {
       await AsyncStorage.setItem("@mgCount", JSON.stringify(mgCount));
     } catch (err) {
@@ -63,6 +67,7 @@ export default function Index() {
     try {
       let cafTypesStorage = await AsyncStorage.getItem("@cafTypesStorage");
       if (cafTypesStorage !== null) {
+        // console.log("getcafdata test")
         setCafTypes(JSON.parse(cafTypesStorage));
       }
     } catch (err) {
@@ -71,10 +76,17 @@ export default function Index() {
   };
 
   useEffect(() => {
-    getMgData();
-    getColorData(); //TEST
-    // getCafData();
+    //useEffect
   }, []);
+
+
+  useFocusEffect(
+    useCallback(() => {
+      getCafData();
+      getColorData();
+      getMgData();
+    },[])
+  );
 
   return (    
     <ScrollView>
@@ -160,17 +172,15 @@ export default function Index() {
 
       <Text>{myColor}</Text>
       <Button
-        onPress={() => {
-          setMyColor("red");
-          storeColorData(myColor);
+        onPress={() => {          
+          storeColorData("red");
         }}
         title="make red"
         color="red"
       />
       <Button
         onPress={() => {
-          setMyColor("blue");
-          storeColorData(myColor);
+          storeColorData("blue");
         }}
         title="make blue"
         color="blue"

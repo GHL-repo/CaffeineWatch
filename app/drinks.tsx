@@ -1,5 +1,6 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useCallback} from 'react';
 import { Text, TextInput, View, Button, FlatList, Alert, Modal } from "react-native";
+import { useFocusEffect } from '@react-navigation/native';
 import data from "../src/data";
 import DrinksListEl from "@/components/DrinksListEl";
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -18,14 +19,16 @@ export default function Profile() {
   const handleReset = () => {
     setCafTypes(prevCafTypes => data.caffeineTypes);
     storeCaffeineTypes(data.caffeineTypes);
+    setModalOpen(false);  
   };
 
   const handleAddCafType = () => {
     if (cafName.length > 0 && cafMg != undefined) {      
       const cafId = cafTypes.length + Math.random();
       const newCafType = {id: cafId, name: cafName, mgPerCup: cafMg};
-      setCafTypes(prevCafTypes => [...prevCafTypes, newCafType])
-      // storeCaffeineTypes(cafTypes);
+      setCafTypes(prevCafTypes => [...prevCafTypes, newCafType]);
+      storeCaffeineTypes(newCafType);
+      setModalOpen(false);  
       console.log(cafMg);
     } else {
       Alert.alert("Oops","field cannot be empty");
@@ -78,10 +81,16 @@ export default function Profile() {
   };
   
   useEffect(() => {
-    handleReset();
+    // handleReset();
     // getCaffeineTypes();
     // console.log(cafTypes)
   }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      getCaffeineTypes();
+    },[])
+  );
 
 
 
@@ -122,8 +131,7 @@ export default function Profile() {
 
       <Button
         onPress={() => {
-          handleAddCafType();
-          setEditModalOpen(false);          
+          handleAddCafType();     
         }}
         title="Save"
         color="#841584"
@@ -132,14 +140,13 @@ export default function Profile() {
       <Button
         onPress={() => {
           handleReset();
-          setEditModalOpen(false);
         }}
         title="Reset"
         color="#151584"
       />
     </View>
     </Modal> 
-
+{/* 
     <Modal visible={editModalOpen} animationType="slide" >
     <View className="h-full bg-white p-8 mt-14">
       <View className="mb-2 self-center">
@@ -165,8 +172,7 @@ export default function Profile() {
 
       <Button
         onPress={() => {
-          handleAddCafType();
-          setModalOpen(false);          
+          handleAddCafType();   
         }}
         title="Save"
         color="#841584"
@@ -175,13 +181,12 @@ export default function Profile() {
       <Button
         onPress={() => {
           handleReset();
-          setModalOpen(false);
         }}
         title="Reset"
         color="#151584"
       />
     </View>
-    </Modal> 
+    </Modal>  */}
     </View>
     
  

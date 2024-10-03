@@ -1,14 +1,16 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useCallback} from 'react';
 import { Text, View, Button } from "react-native";
+import { useFocusEffect } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function Profile() {
   // TEST
   const [myColor, setMyColor] = useState("white");
 
-  const storeColorData = async (myColor) => {
+  const storeColorData = async (col) => {
+    setMyColor(col);
     try {
-      await AsyncStorage.setItem("@color", JSON.stringify(myColor));
+      await AsyncStorage.setItem("@color", JSON.stringify(col));
     } catch (err) {
       alert(err);
     }
@@ -29,9 +31,15 @@ export default function Profile() {
 
   useEffect(() => {
 
-    getColorData(); //TEST
+    ; //TEST
     // getCafData();
   }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      getColorData();
+    },[])
+  );
 
   return (
     <View className="flex-1 items-start justify-start bg-white p-10">
@@ -42,17 +50,15 @@ export default function Profile() {
 
       <Text>{myColor}</Text>
       <Button
-        onPress={() => {
-          setMyColor("red");
-          storeColorData(myColor);
+        onPress={() => {          
+          storeColorData("red");
         }}
         title="make red"
         color="red"
       />
       <Button
         onPress={() => {
-          setMyColor("blue");
-          storeColorData(myColor);
+          storeColorData("blue");
         }}
         title="make blue"
         color="blue"
