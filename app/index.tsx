@@ -67,7 +67,7 @@ export default function Index() {
     try {
       let cafTypesStorage = await AsyncStorage.getItem("@cafTypesStorage");
       if (cafTypesStorage !== null) {
-        // console.log("getcafdata test")
+        console.log("getcafdata test")
         setCafTypes(JSON.parse(cafTypesStorage));
       }
     } catch (err) {

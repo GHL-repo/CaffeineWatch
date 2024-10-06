@@ -26,10 +26,10 @@ export default function Profile() {
     if (cafName.length > 0 && cafMg != undefined) {      
       const cafId = cafTypes.length + Math.random();
       const newCafType = {id: cafId, name: cafName, mgPerCup: cafMg};
-      setCafTypes(prevCafTypes => [...prevCafTypes, newCafType]);
-      storeCaffeineTypes(newCafType);
+      const newCafTypes = [...cafTypes, newCafType];
+      setCafTypes(newCafTypes);
+      storeCaffeineTypes(newCafTypes);
       setModalOpen(false);  
-      console.log(cafMg);
     } else {
       Alert.alert("Oops","field cannot be empty");
     }
@@ -52,10 +52,12 @@ export default function Profile() {
   };
 
   const handlePressDelete = (id) => {
-    console.log("delete pressed")
     setCafTypes((prevCafTypes) => {
-      return prevCafTypes.filter(item => item.id != id);
+      const newCafTypes = prevCafTypes.filter(item => item.id != id);  
+      storeCaffeineTypes(newCafTypes);
+      return newCafTypes;     
     });
+    
   };
 
   
@@ -82,8 +84,6 @@ export default function Profile() {
   
   useEffect(() => {
     // handleReset();
-    // getCaffeineTypes();
-    // console.log(cafTypes)
   }, []);
 
   useFocusEffect(
