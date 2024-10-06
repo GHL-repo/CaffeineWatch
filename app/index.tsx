@@ -14,33 +14,8 @@ import { useFocusEffect } from '@react-navigation/native';
 
 
 export default function Index() {  
-  // TEST
-  const [myColor, setMyColor] = useState("white");
-
-  const storeColorData = async (col) => {
-    setMyColor(col);
-    try {
-      await AsyncStorage.setItem("@color", JSON.stringify(col));
-    } catch (err) {
-      alert(err);
-    }
-  };
-
-  const getColorData = async () => {
-    try {
-      let myColor = await AsyncStorage.getItem("@color");
-      if (myColor !== null) {
-        setMyColor(JSON.parse(myColor));
-      }
-    } catch (err) {
-      alert(err);
-    }
-  };
-
-  // TSET
-
   const [mgCount, setMgCount] = useState(0);
-  const [cafTypes, setCafTypes] = useState();
+  const [cafTypes, setCafTypes] = useState(data.caffeineTypes);
   const resetMgCount = () => {setMgCount(0); storeMgData(0);}
 
   const storeMgData = async (mgCount) => {
@@ -63,11 +38,20 @@ export default function Index() {
     }
   };
 
-  const getCafData = async () => {
+  // AsyncStore functions
+  const storeCaffeineTypes = async (cafTypes) => {
+    try {
+      const cafTypesStorage = JSON.stringify(cafTypes);
+      await AsyncStorage.setItem('@cafTypesStorage', cafTypesStorage);
+    } catch (err) {
+      alert(err);
+    }
+  };
+  
+  const getCaffeineTypes = async () => {
     try {
       let cafTypesStorage = await AsyncStorage.getItem("@cafTypesStorage");
       if (cafTypesStorage !== null) {
-        console.log("getcafdata test")
         setCafTypes(JSON.parse(cafTypesStorage));
       }
     } catch (err) {
@@ -77,13 +61,13 @@ export default function Index() {
 
   useEffect(() => {
     //useEffect
+    getCaffeineTypes();
   }, []);
 
 
   useFocusEffect(
     useCallback(() => {
-      getCafData();
-      getColorData();
+      getCaffeineTypes();
       getMgData();
     },[])
   );
@@ -132,22 +116,6 @@ export default function Index() {
 
       <View className="flex flex-wrap flex-row justify-between">
         {
-          data.caffeineTypes.map( caffeineType => {
-            return (
-              <CustomButton 
-                key={caffeineType.id}
-                title={caffeineType["name"]}
-                handlePress={onPress = () => {
-                  setMgCount(prevMgCount => prevMgCount + caffeineType["mgPerCup"]);
-                  storeMgData(mgCount + caffeineType["mgPerCup"]);
-                }}
-                containerStyles="h-20 p-2 w-20 mt-5"
-              />
-            )
-          })
-        }
-
-        {/* {
           cafTypes.map( caffeineType => {
             return (
               <CustomButton 
@@ -161,7 +129,7 @@ export default function Index() {
               />
             )
           })
-        } */}
+        }
         
         <CustomButton
           title="Reset"
@@ -169,23 +137,6 @@ export default function Index() {
           containerStyles="bg-blue-400 h-20 p-2 w-20 mt-5"
         />
       </View>  
-
-      <Text>{myColor}</Text>
-      <Button
-        onPress={() => {          
-          storeColorData("red");
-        }}
-        title="make red"
-        color="red"
-      />
-      <Button
-        onPress={() => {
-          storeColorData("blue");
-        }}
-        title="make blue"
-        color="blue"
-      />
-
     </View>
     </ScrollView>
   );
