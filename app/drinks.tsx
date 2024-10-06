@@ -42,7 +42,7 @@ export default function Profile() {
   };
 
   const handleMgChange = (val) => {
-    setCafMg(val);
+    setCafMg(Number(val));
   };
 
 

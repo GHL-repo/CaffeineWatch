@@ -69,6 +69,7 @@ export default function Index() {
     useCallback(() => {
       getCaffeineTypes();
       getMgData();
+      console.log(cafTypes)
     },[])
   );
 
