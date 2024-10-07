@@ -74,8 +74,8 @@ export default function Index() {
   );
 
   return (    
-    <ScrollView>
-    <View className="flex justify-start min-h-full bg-white p-10">
+    <ScrollView className="bg-white">
+    <View className="flex justify-start h-full p-10">
       <StatusBar style="auto"/>      
       
       <View className="flex flex-row justify-between h-[40px] mb-6">
