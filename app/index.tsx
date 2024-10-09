@@ -12,7 +12,6 @@ import { useFocusEffect } from '@react-navigation/native';
 
 
 
-
 export default function Index() {  
   const [mgCount, setMgCount] = useState(0);
   const [cafTypes, setCafTypes] = useState(data.caffeineTypes);
@@ -61,15 +60,13 @@ export default function Index() {
 
   useEffect(() => {
     //useEffect
-    getCaffeineTypes();
   }, []);
-
 
   useFocusEffect(
     useCallback(() => {
       getCaffeineTypes();
       getMgData();
-      console.log(cafTypes)
+      // console.log(cafTypes)
     },[])
   );
 

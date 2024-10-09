@@ -12,15 +12,17 @@ export default function Profile() {
   const [cafTypes, setCafTypes] = useState(data.caffeineTypes);
   const [cafName, setCafName] = useState();
   const [cafMg, setCafMg] = useState();
-
+  const [curEditId, setCurEditId] = useState();
   const [modalOpen, setModalOpen] = useState(false);
   const [editModalOpen, setEditModalOpen] = useState(false);
+  
 
   const handleReset = () => {
     setCafTypes(prevCafTypes => data.caffeineTypes);
     storeCaffeineTypes(data.caffeineTypes);
     setModalOpen(false);  
   };
+
 
   const handleAddCafType = () => {
     if (cafName.length > 0 && cafMg != undefined) {      
@@ -35,7 +37,6 @@ export default function Profile() {
     }
   };
 
-
   // Edit caftype functions
   const handleNameChange = (val) => {
     setCafName(val);
@@ -45,10 +46,32 @@ export default function Profile() {
     setCafMg(Number(val));
   };
 
-
   // DrinksListEl functions
-  const handlePressEdit = () => {
-    console.log("edit pressed")
+  const handlePressEdit = (id) => {
+    const itemToEdit = cafTypes.find((item) => item.id === id);
+
+    setCurEditId(itemToEdit.id);
+    setCafName(itemToEdit.name);
+    setCafMg(itemToEdit.mgPerCup);
+    setEditModalOpen(true);
+  };
+
+  const handleSaveEdit = (id, newName, newMg) => {
+
+    const newCafTypes = cafTypes.map(item => {
+      if (item.id === id) {
+        return {
+          ...item,        // Copy existing object properties
+          name: newName,  // Update name
+          mgPerCup: newMg // Update mgPerCup
+        };
+      }
+      return item; // Return unchanged object for others
+    });
+
+    setCafTypes(newCafTypes);
+    storeCaffeineTypes(newCafTypes);
+    setEditModalOpen(false);
   };
 
   const handlePressDelete = (id) => {
@@ -56,10 +79,8 @@ export default function Profile() {
       const newCafTypes = prevCafTypes.filter(item => item.id != id);  
       storeCaffeineTypes(newCafTypes);
       return newCafTypes;     
-    });
-    
+    });    
   };
-
   
   // AsyncStore functions
   const storeCaffeineTypes = async (cafTypes) => {
@@ -82,6 +103,7 @@ export default function Profile() {
     }
   };
   
+
   useEffect(() => {
     // handleReset();
   }, []);
@@ -93,19 +115,19 @@ export default function Profile() {
   );
 
 
-
   return (
     <View className="h-full bg-white p-8">
 
     <View>  
       <View className="mb-2 self-center">
-      <Ionicons 
-        name="add-circle-outline" 
-        size={32} 
-        onPress={() => setModalOpen(true)}
-      />
+        <Ionicons 
+          name="add-circle-outline" 
+          size={32} 
+          onPress={() => {setCafName(""); setModalOpen(true);}}
+        />
       </View> 
   
+    {/* Add new drink modal*/}
     <Modal visible={modalOpen} animationType="slide" >
     <View className="h-full bg-white p-8 mt-14">
       <View className="mb-2 self-center">
@@ -146,17 +168,18 @@ export default function Profile() {
       />
     </View>
     </Modal> 
-{/* 
+    
+    {/* Edit drink modal*/}
     <Modal visible={editModalOpen} animationType="slide" >
     <View className="h-full bg-white p-8 mt-14">
       <View className="mb-2 self-center">
       <Ionicons 
         name="close-circle-outline" size={32}
-        onPress={() => setModalOpen(false)}
+        onPress={() => setEditModalOpen(false)}
       />
       </View > 
       
-      <Text className='mt-8 self-center'>Why hello there! Please enter your drink:</Text>
+      <Text className='mt-8 self-center'>Why hello there! Please edit your drink:</Text>
       <TextInput className='mt-2 p-1 pl-4 border'
         onChangeText={handleNameChange}
         value={cafName}
@@ -172,35 +195,26 @@ export default function Profile() {
 
       <Button
         onPress={() => {
-          handleAddCafType();   
+          handleSaveEdit(curEditId, cafName, cafMg);   
         }}
         title="Save"
         color="#841584"
       />
 
-      <Button
-        onPress={() => {
-          handleReset();
-        }}
-        title="Reset"
-        color="#151584"
-      />
     </View>
-    </Modal>  */}
+    </Modal> 
     </View>
-    
- 
 
-    
+
     <FlatList
       data={cafTypes}
       renderItem={({item}) => (
         <DrinksListEl 
           keyExtractor={item => item.id}
           item={item}  
-          handlePressEdit={handlePressEdit}
           handlePressDelete={handlePressDelete}
-          setModalOpen={setModalOpen}    
+          handlePressEdit={handlePressEdit}
+          setEditModalOpen={setEditModalOpen}    
         />)
       }
     />
