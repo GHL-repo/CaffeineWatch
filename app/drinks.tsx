@@ -52,7 +52,7 @@ export default function Profile() {
 
     setCurEditId(itemToEdit.id);
     setCafName(itemToEdit.name);
-    setCafMg(itemToEdit.mgPerCup);
+    setCafMg(String(itemToEdit.mgPerCup));
     setEditModalOpen(true);
   };
 
@@ -63,7 +63,7 @@ export default function Profile() {
         return {
           ...item,        // Copy existing object properties
           name: newName,  // Update name
-          mgPerCup: newMg // Update mgPerCup
+          mgPerCup: Number(newMg) // Update mgPerCup
         };
       }
       return item; // Return unchanged object for others
