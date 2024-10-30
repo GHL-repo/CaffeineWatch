@@ -1,11 +1,11 @@
 import React, {useEffect, useState, useCallback} from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { Button, Text, View, Image, Pressable, ScrollView, TextInput, TouchableOpacity } from "react-native";
+import { Text, View, Image, Pressable, ScrollView } from "react-native";
 import { Link } from "expo-router";
 import CustomButton from '@/components/CustomButton';
+import CaffeineChart from '@/components/CaffeineChart';
 import user from "../assets/icons/user.png";
 import coffee from "../assets/icons/coffee-shop.png";
-import graph from "../assets/images/graph.png";
 import data from "../src/data";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFocusEffect } from '@react-navigation/native';
@@ -103,14 +103,11 @@ export default function Index() {
       </View>
       <Text className="font-pregular">Avoid Caffeine after: 16:20</Text>
       
-      <View className="w-full h-53 border border-gray-200 bg-black">
-        <Image
-          source={graph}
-          className="w-full h-52"
-          resizeMode="shrink"
-        />  
-      </View>  
-
+      <View className="h-[200px] bg-white">
+        <CaffeineChart 
+          mgCount={mgCount}
+        />
+      </View>
 
       <View className="flex flex-wrap flex-row justify-between">
         {

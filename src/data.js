@@ -8,28 +8,27 @@ export default {
     {
       "id": 1,
       "name": "Espresso",
-      "mgPerCup": 27
+      "mgPerCup": 63
     },
     {
       "id": 2,
-      "name": "Cappuccino",
-      "mgPerCup": 27
+      "name": "Latte",
+      "mgPerCup": 132
+    },
+    {
+      "id": 3,
+      "name": "Black Tea",
+      "mgPerCup": 70
+    },
+    {
+      "id": 4,
+      "name": "Hot Chocolate",
+      "mgPerCup": 10
+    },
+    {
+      "id": 5,
+      "name": "Caffeine Pill",
+      "mgPerCup": 200
     }
-    // },
-    // {
-    //   "id": 3,
-    //   "name": "Instant Coffee",
-    //   "mgPerCup": 69
-    // },
-    // {
-    //   "id": 4,
-    //   "name": "Decaf",
-    //   "mgPerCup": 5
-    // },
-    // {
-    //   "id": 5,
-    //   "name": "Test Coffee",
-    //   "mgPerCup": 69
-    // }
   ]
 };
