@@ -5,7 +5,7 @@ import fontSpaceMono from "../assets/fonts/SpaceMono-Regular.ttf";
 
 
 const CaffeineChart = ({
-        mgCount,
+        mgCount
     }
     ) => {
     const font = useFont(fontSpaceMono, 12);
@@ -20,20 +20,20 @@ const CaffeineChart = ({
     return (
         <CartesianChart
             data={DATA}
-            xKey="time" 
-            yKeys={["amount"]} 
-            axisOptions={{ font }} 
+            xKey="time"
+            yKeys={["amount"]}
+            axisOptions={{ 
+                font, 
+                formatXLabel: (h) => `${h}h`,
+                formatYLabel: (mg) => `${mg}mg`
+            }}
             domain={{y: [0, (mgCount === 0 ? 10 : mgCount)]}}
-        >
-            {/* 👇 render function exposes various data, such as points. */}
-            {({ points }) => (
-            // 👇 and we'll use the Line component to render a line path.
-            <>
-            {/* <Line points={points.highTmp} color="red" strokeWidth={3} /> */}
-            <Line points={points.amount} color="blue" strokeWidth={3} />
-            </>
             
-            )}
+        >
+
+        {({ points }) => (
+            <Line points={points.amount} color="blue" strokeWidth={3} />            
+        )}
         </CartesianChart>
     );
 };
