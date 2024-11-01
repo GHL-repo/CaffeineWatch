@@ -17,6 +17,21 @@ export default function Index() {
   const [cafTypes, setCafTypes] = useState(data.caffeineTypes);
   const resetMgCount = () => {setMgCount(0); storeMgData(0);}
 
+
+  const threshold = 100;
+  const halfLife = 5;          
+  const hours = 36;         
+
+  let DATA = Array.from({ length: hours }, (_, t) => ({
+      time: t,
+      amount: mgCount * Math.pow(0.5, t / halfLife),
+      threshold: threshold,
+  }));
+
+  const calculateAvoid = async (mgCount) => {
+    mgCount * Math.pow(0.5, t / halfLife)
+  }
+
   const storeMgData = async (mgCount) => {
     setMgCount(mgCount)
     try {
@@ -106,6 +121,8 @@ export default function Index() {
       <View className="h-[200px] bg-white">
         <CaffeineChart 
           mgCount={mgCount}
+          threshold={threshold}
+          DATA={DATA}
         />
       </View>
 
