@@ -1,17 +1,17 @@
 export default {
     drinksLog: [
       {
-        "timeStamp": "2024-11-07T07:59:09.078Z",
+        "timeStamp": "2024-11-08T06:59:09.078Z",
         "nameOfDrink": "Filter Coffee",
         "amountOfMg": 100
       },
       {
-        "timeStamp": "2024-11-07T15:31:09.078Z",
+        "timeStamp": "2024-11-08T09:31:09.078Z",
         "nameOfDrink": "Filter Coffee",
         "amountOfMg": 100
       },
       {
-        "timeStamp": "2024-11-07T21:23:09.078Z",
+        "timeStamp": "2024-11-08T17:23:09.078Z",
         "nameOfDrink": "Filter Coffee",
         "amountOfMg": 100
       }

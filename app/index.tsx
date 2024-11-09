@@ -1,47 +1,49 @@
 import React, {useEffect, useState, useCallback} from 'react';
-import { StatusBar } from 'expo-status-bar';
 import { Text, View, Image, Pressable, ScrollView } from "react-native";
+import { useFocusEffect } from '@react-navigation/native';
+import { StatusBar } from 'expo-status-bar';
 import { Link } from "expo-router";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { addHours, format } from 'date-fns';
 import CustomButton from '@/components/CustomButton';
 import CaffeineChart from '@/components/CaffeineChart';
 import user from "../assets/icons/user.png";
 import coffee from "../assets/icons/coffee-shop.png";
 import data from "../src/data";
-import cafLogTest from "../src/cafLogTest";
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useFocusEffect } from '@react-navigation/native';
 
 
 
 export default function Index() {  
-  const [mgCount, setMgCount] = useState(0);
-  const [cafTypes, setCafTypes] = useState(data.caffeineTypes);
-  
-  const [sleepTime, setSleepTime] = useState("100");
-  const [cafLog, setCafLog] = useState(cafLogTest.drinksLog); // Logs all entries
-  const [cafTimeline, setCafTimeline] = useState([]); // Logs mg each hour of a day
 
-  const resetMgCount = () => {setMgCount(0); storeMgData(0); resetLog();}
+  const [cafTypes, setCafTypes] = useState(data.caffeineTypes); // Library of drink types with caffeine content (mg per drink)
+  const [cafLog, setCafLog] = useState([]); // Log of caffeine intake entries
+  const [cafTimeline, setCafTimeline] = useState([]); // Log of hourly caffeine levels throughout the day 
+  const [mgCount, setMgCount] = useState(0); // Current caffeine level (mg)
+  const [sleepTime, setSleepTime] = useState("22:30"); // Time when caffeine level falls below threshold
 
-  const threshold = 100;
+
+  const threshold = 100; 
+  const timeZone = 1; // UTC+1
   
 
   //test functions
+  const resetMgCount = () => {setMgCount(0); storeMgData(0); resetLog();}
   const resetLog = async () => {
+    const newCafLog = [];
     try {
-      date = new Date();
-      setCafLog (cafLogTest.drinksLog);
+      setCafLog(newCafLog);
     } catch (err) {
       alert(err);
     }    
+    generateTimeline();
   };
 
 
   //Generate & populate timeline
   const generateTimeline = async () => {
-    const range = 36;
-    const offSet = range / 2;
-    const currentDate = new Date(new Date().getTime() + 1 * 60 * 60 * 1000); // UTC+1
+    const range = 24;
+    const offSet = 10;
+    const currentDate = new Date(new Date().setHours(new Date().getHours() + timeZone)); // UTC+1
     const startingDate = new Date(currentDate);
     startingDate.setHours(startingDate.getHours() - offSet);
     
@@ -58,55 +60,66 @@ export default function Index() {
     
 
     console.log("=cafLog===================================")
-    for (let i = 0; i < cafLogTest.drinksLog.length; i++) {
-      console.log(`cl${i}, At: ${cafLogTest.drinksLog[i].timeStamp}, mg: ${cafLogTest.drinksLog[i].amountOfMg} `);
+    for (let i = 0; i < cafLog.length; i++) {
+      console.log(`cl${i}, At: ${cafLog[i].timeStamp}, mg: ${cafLog[i].amountOfMg} `);
     } 
 
-    const cafLogMap = new Map (cafLogTest.drinksLog.map(item => [item.timeStamp.slice(0, 13), item.amountOfMg]));
     let prevAmount = 0;
     let decay = 0;
-
+    
     for (let i = 0; i < timeline.length; i++) {
       
-      if (cafLogMap.has(timeline[i].hourStamp)) {
-        timeline[i].amount = cafLogMap.get(timeline[i].hourStamp);              
-      }       
+      // Check if there's a matching entry in cafLog for the current timeline hourStamp
+      for (let j = 0; j < cafLog.length; j++) {      
+        if (timeline[i].hourStamp === cafLog[j].timeStamp.slice(0, 13)) {
+          timeline[i].amount += cafLog[j].amountOfMg;              
+        }
+      }      
+      // Calculate decay based on the previous amount in the timeline
       if (i !== 0) {
-        prevAmount = timeline[i-1].amount;
+        prevAmount = timeline[i - 1].amount;
         decay = prevAmount * Math.pow(0.5, 1 / 5);
       } 
       timeline[i].amount += decay;
     }
 
-    console.log("=timeline=after===========================")
+    console.log("=timeline=================================")
     for (let i = 0; i < timeline.length; i++) {
       console.log(`tl${i}, At: ${timeline[i].hourStamp}, mg: ${timeline[i].amount}`);
     } 
     console.log("==========================================")
     console.log("                                          ")
-    console.log("                                          ")     
 
     setCafTimeline(timeline);
-
   };
 
 
   const handleAddCafLog = (name, amount) => {
-    date = new Date();
-    const newCafEntry = {timeStamp: date, name: name, amount: amount};
+    const date = new Date(new Date().setHours(new Date().getHours() + timeZone)).toISOString(); 
+    const newCafEntry = { timeStamp: date, nameOfDrink: name, amountOfMg: amount };
     const newCafLog = [...cafLog, newCafEntry];
     setCafLog(newCafLog);
-    console.log(JSON.stringify(newCafLog, null, 2));
-  }
+  };
 
 
-  // const calculateSleepTime = async () => {
-  //   for (let i = 0; i < cafLog.length; i++) {
-  //     if (cafLog[i].amount < 100) {
-  //       setSleepTime(cafLog[i].time);
-  //     }
-  //   }    
-  // }
+  const calculateSleepTime = async () => {
+    let foundTime = "";
+    for (let i = cafTimeline.length-1; i >= 0; i--) {
+      if (cafTimeline[i].amount <= threshold) {
+        foundTime = cafTimeline[i].timeStamp;    
+        if (i === 0) {
+          foundTime = new Date(new Date().setHours(new Date().getHours() + timeZone)).toISOString();
+        }    
+      } else {
+        break;
+      }
+    } 
+    if (!foundTime) {
+      setSleepTime("more than 12 hours");
+    } else {
+      setSleepTime(format(addHours(new Date(foundTime), -1), 'HH:mm'));
+    }
+  };
 
 
   const storeMgData = async (mgCount) => {
@@ -172,16 +185,17 @@ export default function Index() {
   };
 
   useEffect(() => {
-    //useEffect
-    generateTimeline();
-    
-  }, []);
+    generateTimeline();    
+  }, [cafLog]);
+
+  useEffect(() => {
+    calculateSleepTime();
+  }, [cafTimeline]);
 
   useFocusEffect(
     useCallback(() => {
       getCaffeineTypes();
       getMgData();
-      generateTimeline();
     },[])
   );
 
@@ -216,7 +230,7 @@ export default function Index() {
         <Text className="font-pregular">Current caffeine amount: </Text>
         <Text className="font-pregular ml-12">{mgCount}mg</Text>       
       </View>
-      <Text className="font-pregular">Avoid Caffeine after: {sleepTime}</Text>
+      <Text className="font-pregular">Optimal sleep after: {sleepTime}</Text>
       
       <View className="h-[200px] bg-white">
         <CaffeineChart 
@@ -247,14 +261,6 @@ export default function Index() {
           handlePress={resetMgCount}
           containerStyles="bg-blue-400 h-20 p-2 w-20 mt-5"
         />
-
-        <CustomButton
-          title="Time Line"
-          handlePress={generateTimeline}
-          containerStyles="bg-gray-400 h-20 p-2 w-20 mt-5"
-        />
-
-
 
 
       </View>  
