@@ -27,8 +27,8 @@ export default {
     },
     {
       "id": 5,
-      "name": "Caffeine Pill",
-      "mgPerCup": 200
+      "name": "Energy Drink",
+      "mgPerCup": 180
     }
   ]
 };

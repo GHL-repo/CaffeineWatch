@@ -1,4 +1,4 @@
-import React, {useEffect, useState, useCallback} from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { Text, View, Image, Pressable, ScrollView } from "react-native";
 import { useFocusEffect } from '@react-navigation/native';
 import { StatusBar } from 'expo-status-bar';
@@ -7,6 +7,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { addHours, format } from 'date-fns';
 import CustomButton from '@/components/CustomButton';
 import CaffeineChart from '@/components/CaffeineChart';
+import CafModal from "@/components/CafModal"
 import user from "../assets/icons/user.png";
 import coffee from "../assets/icons/coffee-shop.png";
 import data from "../src/data";
@@ -21,9 +22,32 @@ export default function Index() {
   const [mgCount, setMgCount] = useState(0); // Current caffeine level (mg)
   const [sleepTime, setSleepTime] = useState("22:30"); // Time when caffeine level falls below threshold
 
-
   const threshold = 100; 
   const timeZone = 1; // UTC+1
+
+  // Modal management
+  const [isCafModalVisible, setIsCafModalVisible] = useState(false);
+  const [selectedCaf, setSelectedCaf] = useState(null);
+
+  const openCafModal = (caffeineType) => {
+    setSelectedCaf(caffeineType);
+    setIsCafModalVisible(true);
+  };
+
+  const closeCafModal = () => {
+    setIsCafModalVisible(false);
+    setSelectedCaf(null);
+  };
+
+  const confirmCaffeine = () => {
+    if (selectedCaf) {
+      const { name, mgPerCup } = selectedCaf;
+      setMgCount((prevMgCount) => prevMgCount + mgPerCup);
+      storeMgData(mgCount + mgPerCup);
+      handleAddCafLog(name, mgPerCup);
+    }
+    closeCafModal();
+  };
   
 
   //test functions
@@ -121,7 +145,7 @@ export default function Index() {
     }
   };
 
-
+  // AsyncStore functions
   const storeMgData = async (mgCount) => {
     setMgCount(mgCount)
     try {
@@ -142,7 +166,6 @@ export default function Index() {
     }
   };
 
-  // AsyncStore functions
   const storeCafLog = async (cafLog) => {
     try {
       const cafLogStorage = JSON.stringify(cafLog);
@@ -162,7 +185,6 @@ export default function Index() {
       alert(err);
     }
   };
-
 
   const storeCaffeineTypes = async (cafTypes) => {
     try {
@@ -245,16 +267,25 @@ export default function Index() {
               <CustomButton 
                 key={caffeineType.id}
                 title={caffeineType["name"]}
-                handlePress={onPress = () => {
-                  setMgCount(prevMgCount => prevMgCount + caffeineType["mgPerCup"]);
-                  storeMgData(mgCount + caffeineType["mgPerCup"]);               
-                  handleAddCafLog(caffeineType["name"],caffeineType["mgPerCup"]);
-                }}
+                handlePress={() => openCafModal({ name: caffeineType.name, mgPerCup: caffeineType.mgPerCup })}
                 containerStyles="h-20 p-2 w-20 mt-5"
               />
             )
           })
         }
+
+        <CafModal 
+          isVisible={isCafModalVisible} 
+          onClose={closeCafModal} 
+          onConfirm={confirmCaffeine}
+        >
+          {selectedCaf && (
+            <View>
+              <Text className="text-lg font-semibold mb-3"> {selectedCaf.name} </Text>
+              <Text className="text-lg font-semibold mb-3"> ({selectedCaf.mgPerCup} mg of caffeine) </Text>
+            </View>
+          )}
+        </CafModal>
         
         <CustomButton
           title="Reset mg"

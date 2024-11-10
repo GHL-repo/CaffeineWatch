@@ -1,5 +1,5 @@
 import React, {useEffect, useState, useCallback} from 'react';
-import { Text, TextInput, View, Button, FlatList, Alert, Modal } from "react-native";
+import { Text, TextInput, View, Button, FlatList, Alert, Modal, TouchableOpacity } from "react-native";
 import { useFocusEffect } from '@react-navigation/native';
 import data from "../src/data";
 import DrinksListEl from "@/components/DrinksListEl";
@@ -151,21 +151,23 @@ export default function Profile() {
         keyboardType="numeric"
       />
 
-      <Button
-        onPress={() => {
-          handleAddCafType();     
-        }}
-        title="Save"
-        color="#841584"
-      />
+      <View className="flex flex-row justify-between mt-1">
 
-      <Button
-        onPress={() => {
-          handleReset();
-        }}
-        title="Reset"
-        color="#151584"
-      />
+            <TouchableOpacity
+            onPress={handleReset}
+            className="p-2 bg-purple-600 rounded-lg flex-1 mr-2"
+            >
+            <Text className="text-center text-white font-semibold">Reset</Text>
+            </TouchableOpacity>
+
+
+            <TouchableOpacity
+            onPress={handleAddCafType}
+            className="p-2 bg-blue-600 rounded-lg flex-1 ml-2"
+            >
+            <Text className="text-center text-white font-semibold">Save</Text>
+            </TouchableOpacity>
+      </View>
     </View>
     </Modal> 
     
@@ -193,13 +195,24 @@ export default function Profile() {
         keyboardType="numeric"
       />
 
-      <Button
+      <View className="flex flex-row justify-between mt-1">
+        <TouchableOpacity
+          onPress={() => {
+            handleSaveEdit(curEditId, cafName, cafMg);   
+          }}
+          className="p-2 bg-blue-600 rounded-lg flex-1 mr-2"
+          >
+          <Text className="text-center text-white font-semibold">Save Changes</Text>
+        </TouchableOpacity>
+      </View>
+
+      {/* <Button
         onPress={() => {
           handleSaveEdit(curEditId, cafName, cafMg);   
         }}
         title="Save"
         color="#841584"
-      />
+      /> */}
 
     </View>
     </Modal> 
