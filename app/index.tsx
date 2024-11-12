@@ -1,9 +1,9 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { Text, View, Image, Pressable, ScrollView } from "react-native";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFocusEffect } from '@react-navigation/native';
 import { StatusBar } from 'expo-status-bar';
 import { Link } from "expo-router";
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { addHours, format } from 'date-fns';
 import CustomButton from '@/components/CustomButton';
 import CaffeineChart from '@/components/CaffeineChart';
@@ -46,7 +46,6 @@ export default function Index() {
     if (selectedCaf) {
       const { name, mgPerCup } = selectedCaf;
       setMgCount((prevMgCount) => prevMgCount + mgPerCup);
-      storeMgData(mgCount + mgPerCup);
       handleAddCafLog(name, mgPerCup);
     };
     closeCafModal();
@@ -54,7 +53,8 @@ export default function Index() {
   
 
   // Test functions
-  const resetMgCount = () => {setMgCount(0); storeMgData(0); resetLog();}
+  // const resetMgCount = () => {setMgCount(0); storeMgData(0); resetLog();}
+  const resetMgCount = () => {setMgCount(0); resetLog();}
   const resetLog = async () => {
     const newCafLog = [];
     try {
@@ -140,28 +140,22 @@ export default function Index() {
     };
   };
 
+  const calculateCurrentMg = async () => {
+    let foundMg = 0;
+    const currentDate = new Date(new Date().setHours(new Date().getHours() + timeZone))
+    const now = currentDate.toISOString().slice(0, 16)
+    for (let i = cafTimeline.length-1; i >= 0; i--) {
+      if (cafTimeline[i].hourMinStamp === now) {
+        foundMg = cafTimeline[i].amount;
+        break;
+      };
+    };
+    const roundedMg = Math.round(foundMg * 10) / 10;
+      setMgCount(roundedMg);
+  };
+
 
   // AsyncStore functions
-  const storeMgData = async (mgCount) => {
-    setMgCount(mgCount)
-    try {
-      await AsyncStorage.setItem("@mgCount", JSON.stringify(mgCount));
-    } catch (err) {
-      alert(err);
-    };
-  };
-
-  const getMgData = async () => {
-    try {
-      let mgCount = await AsyncStorage.getItem("@mgCount");
-      if (mgCount !== null) {
-        setMgCount(JSON.parse(mgCount));
-      };
-    } catch (err) {
-      alert(err);
-    };
-  };
-
   const storeCafLog = async (cafLog) => {
     try {
       const cafLogStorage = JSON.stringify(cafLog);
@@ -209,14 +203,20 @@ export default function Index() {
   }, [cafLog]);
 
   useEffect(() => {
-    calculateSleepTime();
-  }, [cafTimeline]);
+    const interval = setInterval(() => {      
+      calculateCurrentMg();
+      calculateSleepTime();
+    }, 500);
+
+    return () => clearInterval(interval);
+  }, [confirmCaffeine]);
 
   useFocusEffect(
     useCallback(() => {
       getCaffeineTypes();
-      getMgData();
-    },[])
+      // getMgData();
+    }, [])
+
   );
 
 
