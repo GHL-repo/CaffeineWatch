@@ -22,8 +22,11 @@ export default function Index() {
   const [mgCount, setMgCount] = useState(0); // Current caffeine level (mg)
   const [sleepTime, setSleepTime] = useState("22:30"); // Time when caffeine level falls below threshold
 
-  const threshold = 100; 
-  const timeZone = 1; // UTC+1
+  // Global parameters
+  const threshold = 100; // mg of caffeine in order to sleep well
+  const timeZone = 1; // 1 = UTC+1
+  const range = 24; // timeline range in hrs from starting point
+  const offSet = 6; // offset shifts starting point in hrs
 
   // Modal management
   const [isCafModalVisible, setIsCafModalVisible] = useState(false);
@@ -45,12 +48,12 @@ export default function Index() {
       setMgCount((prevMgCount) => prevMgCount + mgPerCup);
       storeMgData(mgCount + mgPerCup);
       handleAddCafLog(name, mgPerCup);
-    }
+    };
     closeCafModal();
   };
   
 
-  //test functions
+  // Test functions
   const resetMgCount = () => {setMgCount(0); storeMgData(0); resetLog();}
   const resetLog = async () => {
     const newCafLog = [];
@@ -58,74 +61,66 @@ export default function Index() {
       setCafLog(newCafLog);
     } catch (err) {
       alert(err);
-    }    
-    generateTimeline();
+    };
+    updateTimeline();
   };
 
 
-  //Generate & populate timeline
-  const generateTimeline = async () => {
-    const range = 24;
-    const offSet = 10;
-    const currentDate = new Date(new Date().setHours(new Date().getHours() + timeZone)); // UTC+1
+  // Timeline functions
+  const generateTimeline = (range, offSet, timeZone, threshold) => {
+    const currentDate = new Date(new Date().setHours(new Date().getHours() + timeZone));
     const startingDate = new Date(currentDate);
     startingDate.setHours(startingDate.getHours() - offSet);
-    
-    let timeline = Array.from({ length: range }, (_, t) => {
-      const date = new Date(startingDate.getTime() + t * 60 * 60 * 1000);
-    
+
+    return Array.from({ length: range * 60 }, (_, t) => {
+      const date = new Date(startingDate.getTime() + t * 60 * 1000);
       return {
         timeStamp: date.toISOString(),
-        hourStamp: date.toISOString().slice(0, 13),
+        hourMinStamp: date.toISOString().slice(0, 16),
         amount: 0,
-        threshold: threshold
+        threshold: threshold,
       };
     });
-    
+  };
 
-    console.log("=cafLog===================================")
-    for (let i = 0; i < cafLog.length; i++) {
-      console.log(`cl${i}, At: ${cafLog[i].timeStamp}, mg: ${cafLog[i].amountOfMg} `);
-    } 
-
+  const populateTimeline = (timeline, cafLog) => {
     let prevAmount = 0;
-    let decay = 0;
-    
-    for (let i = 0; i < timeline.length; i++) {
-      
-      // Check if there's a matching entry in cafLog for the current timeline hourStamp
-      for (let j = 0; j < cafLog.length; j++) {      
-        if (timeline[i].hourStamp === cafLog[j].timeStamp.slice(0, 13)) {
-          timeline[i].amount += cafLog[j].amountOfMg;              
+
+    timeline.forEach((entry, i) => {
+      cafLog.forEach(log => {
+        if (entry.hourMinStamp === log.timeStamp.slice(0, 16)) {
+          entry.amount += log.amountOfMg;
         }
-      }      
-      // Calculate decay based on the previous amount in the timeline
+      });
+
       if (i !== 0) {
         prevAmount = timeline[i - 1].amount;
-        decay = prevAmount * Math.pow(0.5, 1 / 5);
-      } 
-      timeline[i].amount += decay;
-    }
+        const decayRatePerMinute = Math.pow(0.5, 1 / 300);
+        entry.amount += prevAmount * decayRatePerMinute;
+      };
+    });
 
-    console.log("=timeline=================================")
-    for (let i = 0; i < timeline.length; i++) {
-      console.log(`tl${i}, At: ${timeline[i].hourStamp}, mg: ${timeline[i].amount}`);
-    } 
-    console.log("==========================================")
-    console.log("                                          ")
+    return timeline;
+  };
 
-    setCafTimeline(timeline);
+  const updateTimeline = async () => {
+    const timeline = generateTimeline(range, offSet, timeZone, threshold);
+    const populatedTimeline = populateTimeline(timeline, cafLog);
+    
+    setCafTimeline(populatedTimeline);
   };
 
 
+  // Caflog
   const handleAddCafLog = (name, amount) => {
     const date = new Date(new Date().setHours(new Date().getHours() + timeZone)).toISOString(); 
     const newCafEntry = { timeStamp: date, nameOfDrink: name, amountOfMg: amount };
     const newCafLog = [...cafLog, newCafEntry];
+
     setCafLog(newCafLog);
   };
 
-
+  // Sleeptime calculator
   const calculateSleepTime = async () => {
     let foundTime = "";
     for (let i = cafTimeline.length-1; i >= 0; i--) {
@@ -133,17 +128,18 @@ export default function Index() {
         foundTime = cafTimeline[i].timeStamp;    
         if (i === 0) {
           foundTime = new Date(new Date().setHours(new Date().getHours() + timeZone)).toISOString();
-        }    
+        };
       } else {
         break;
-      }
-    } 
+      };
+    };
     if (!foundTime) {
       setSleepTime("more than 12 hours");
     } else {
       setSleepTime(format(addHours(new Date(foundTime), -1), 'HH:mm'));
-    }
+    };
   };
+
 
   // AsyncStore functions
   const storeMgData = async (mgCount) => {
@@ -152,7 +148,7 @@ export default function Index() {
       await AsyncStorage.setItem("@mgCount", JSON.stringify(mgCount));
     } catch (err) {
       alert(err);
-    }
+    };
   };
 
   const getMgData = async () => {
@@ -160,10 +156,10 @@ export default function Index() {
       let mgCount = await AsyncStorage.getItem("@mgCount");
       if (mgCount !== null) {
         setMgCount(JSON.parse(mgCount));
-      }
+      };
     } catch (err) {
       alert(err);
-    }
+    };
   };
 
   const storeCafLog = async (cafLog) => {
@@ -172,7 +168,7 @@ export default function Index() {
       await AsyncStorage.setItem('@cafLogStorage', cafLogStorage);
     } catch (err) {
       alert(err);
-    }
+    };
   };
 
   const getCafLog = async () => {
@@ -180,10 +176,10 @@ export default function Index() {
       let cafLogStorage = await AsyncStorage.getItem("@cafLogStorage");
       if (cafLogStorage !== null) {
         setCafLog(JSON.parse(cafLogStorage));
-      }
+      };
     } catch (err) {
       alert(err);
-    }
+    };
   };
 
   const storeCaffeineTypes = async (cafTypes) => {
@@ -192,7 +188,7 @@ export default function Index() {
       await AsyncStorage.setItem('@cafTypesStorage', cafTypesStorage);
     } catch (err) {
       alert(err);
-    }
+    };
   };  
   
   const getCaffeineTypes = async () => {
@@ -203,11 +199,13 @@ export default function Index() {
       }
     } catch (err) {
       alert(err);
-    }
+    };
   };
 
+
+  // Effect hooks
   useEffect(() => {
-    generateTimeline();    
+    updateTimeline();    
   }, [cafLog]);
 
   useEffect(() => {
@@ -220,6 +218,7 @@ export default function Index() {
       getMgData();
     },[])
   );
+
 
   return (    
     <ScrollView className="bg-white">
@@ -293,12 +292,8 @@ export default function Index() {
           containerStyles="bg-blue-400 h-20 p-2 w-20 mt-5"
         />
 
-
       </View>  
     </View>
     </ScrollView>
   );
-}
-
-
-
+};

@@ -3,11 +3,6 @@ import { Text, View, Button } from "react-native";
 
 
 export default function Profile() { 
-  const [isCafModalVisible, setIsCafModalVisible] = useState(false);
-
-  const openCafModal = () => setIsCafModalVisible(true);
-  const closeCafModal = () => setIsCafModalVisible(false);
-
 
   return (
     <View className="flex-1 items-start justify-start bg-white p-10">

@@ -205,15 +205,7 @@ export default function Profile() {
           <Text className="text-center text-white font-semibold">Save Changes</Text>
         </TouchableOpacity>
       </View>
-
-      {/* <Button
-        onPress={() => {
-          handleSaveEdit(curEditId, cafName, cafMg);   
-        }}
-        title="Save"
-        color="#841584"
-      /> */}
-
+      
     </View>
     </Modal> 
     </View>
