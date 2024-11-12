@@ -118,6 +118,7 @@ export default function Index() {
     const newCafLog = [...cafLog, newCafEntry];
 
     setCafLog(newCafLog);
+    storeCafLog(newCafLog);
   };
 
   // Sleeptime calculator
@@ -214,9 +215,8 @@ export default function Index() {
   useFocusEffect(
     useCallback(() => {
       getCaffeineTypes();
-      // getMgData();
+      getCafLog();
     }, [])
-
   );
 
 
