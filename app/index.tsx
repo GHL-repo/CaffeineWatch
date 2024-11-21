@@ -10,24 +10,23 @@ import CaffeineChart from '@/components/CaffeineChart';
 import CafModal from "@/components/CafModal"
 import user from "../assets/icons/user.png";
 import coffee from "../assets/icons/coffee-shop.png";
-import data from "../src/data";
+import { useCaffeineStore, useTimelineStore, useSettingsStore } from '@/store/store'; 
+import DateSelector from '@/components/DateSelector';
 
 
 
 export default function Index() {  
-
-  const [cafTypes, setCafTypes] = useState(data.caffeineTypes); // Library of drink types with caffeine content (mg per drink)
-  const [cafLog, setCafLog] = useState([]); // Log of caffeine intake entries
-  const [cafTimeline, setCafTimeline] = useState([]); // Log of hourly caffeine levels throughout the day 
-  const [mgCount, setMgCount] = useState(0); // Current caffeine level (mg)
-  const [sleepTime, setSleepTime] = useState("22:30"); // Time when caffeine level falls below threshold
-
-  // Global parameters
-  const threshold = 100; // mg of caffeine in order to sleep well
-  const timeZone = 1; // 1 = UTC+1
-  const range = 24; // timeline range in hrs from starting point
-  const offSet = 6; // offset shifts starting point in hrs
-
+  const { cafTypes, setCafTypes } = useCaffeineStore();
+  const { cafLog, setCafLog } = useTimelineStore();
+  const { cafTimeline, setCafTimeline } = useTimelineStore();  
+  // Settings
+  const { threshold } = useSettingsStore();
+  const { timeZone } = useSettingsStore();
+  const range = 24; 
+  const offSet = range/2;
+  // Calculated
+  const [mgCount, setMgCount] = useState(0); 
+  const [sleepTime, setSleepTime] = useState("22:30"); 
   // Modal management
   const [isCafModalVisible, setIsCafModalVisible] = useState(false);
   const [selectedCaf, setSelectedCaf] = useState(null);
@@ -59,9 +58,10 @@ export default function Index() {
     const newCafLog = [];
     try {
       setCafLog(newCafLog);
+      storeCafLog(newCafLog);
     } catch (err) {
       alert(err);
-    };
+    }; 
     updateTimeline();
   };
 
@@ -124,20 +124,22 @@ export default function Index() {
   // Sleeptime calculator
   const calculateSleepTime = async () => {
     let foundTime = "";
+    let timeOfDay = "";
+    let now = new Date(new Date().setHours(new Date().getHours() + timeZone)).toISOString();
     for (let i = cafTimeline.length-1; i >= 0; i--) {
       if (cafTimeline[i].amount <= threshold) {
         foundTime = cafTimeline[i].timeStamp;    
         if (i === 0) {
-          foundTime = new Date(new Date().setHours(new Date().getHours() + timeZone)).toISOString();
+          foundTime = now;
         };
       } else {
         break;
       };
     };
     if (!foundTime) {
-      setSleepTime("more than 12 hours");
+      setSleepTime(`more than ${range-offSet} hours`);
     } else {
-      setSleepTime(format(addHours(new Date(foundTime), -1), 'HH:mm'));
+      setSleepTime(format(addHours(new Date(foundTime), -1), 'HH:mm' + timeOfDay));
     };
   };
 
@@ -176,15 +178,6 @@ export default function Index() {
       alert(err);
     };
   };
-
-  const storeCaffeineTypes = async (cafTypes) => {
-    try {
-      const cafTypesStorage = JSON.stringify(cafTypes);
-      await AsyncStorage.setItem('@cafTypesStorage', cafTypesStorage);
-    } catch (err) {
-      alert(err);
-    };
-  };  
   
   const getCaffeineTypes = async () => {
     try {
@@ -258,6 +251,8 @@ export default function Index() {
           DATA={cafTimeline}
         />
       </View>
+
+      <DateSelector />
 
       <View className="flex flex-wrap flex-row justify-between">
         {

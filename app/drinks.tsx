@@ -152,21 +152,20 @@ export default function Profile() {
       />
 
       <View className="flex flex-row justify-between mt-1">
+        <TouchableOpacity
+        onPress={handleReset}
+        className="p-2 bg-purple-600 rounded-lg flex-1 mr-2"
+        >
+        <Text className="text-center text-white font-semibold">Reset</Text>
+        </TouchableOpacity>
 
-            <TouchableOpacity
-            onPress={handleReset}
-            className="p-2 bg-purple-600 rounded-lg flex-1 mr-2"
-            >
-            <Text className="text-center text-white font-semibold">Reset</Text>
-            </TouchableOpacity>
 
-
-            <TouchableOpacity
-            onPress={handleAddCafType}
-            className="p-2 bg-blue-600 rounded-lg flex-1 ml-2"
-            >
-            <Text className="text-center text-white font-semibold">Save</Text>
-            </TouchableOpacity>
+        <TouchableOpacity
+        onPress={handleAddCafType}
+        className="p-2 bg-blue-600 rounded-lg flex-1 ml-2"
+        >
+        <Text className="text-center text-white font-semibold">Save</Text>
+        </TouchableOpacity>
       </View>
     </View>
     </Modal> 
