@@ -8,17 +8,19 @@ import { addHours, format } from 'date-fns';
 import CustomButton from '@/components/CustomButton';
 import CaffeineChart from '@/components/CaffeineChart';
 import CafModal from "@/components/CafModal"
+import TimeSlider from "@/components/TimeSlider"
 import user from "../assets/icons/user.png";
 import coffee from "../assets/icons/coffee-shop.png";
-import { useCaffeineStore, useTimelineStore, useSettingsStore } from '@/store/store'; 
-import DateSelector from '@/components/DateSelector';
+import { useCaffeineStore, useTimelineStore, useSettingsStore, useTimeStore } from '@/store/store'; 
 
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 
 export default function Index() {  
   const { cafTypes, setCafTypes } = useCaffeineStore();
   const { cafLog, setCafLog } = useTimelineStore();
   const { cafTimeline, setCafTimeline } = useTimelineStore();  
+  const { selectedTime } = useTimeStore();
   // Settings
   const { threshold } = useSettingsStore();
   const { timeZone } = useSettingsStore();
@@ -113,7 +115,8 @@ export default function Index() {
 
   // Caflog
   const handleAddCafLog = (name, amount) => {
-    const date = new Date(new Date().setHours(new Date().getHours() + timeZone)).toISOString(); 
+    // const date = new Date(new Date().setHours(new Date().getHours() + timeZone)).toISOString(); 
+    const date = selectedTime.toISOString(); 
     const newCafEntry = { timeStamp: date, nameOfDrink: name, amountOfMg: amount };
     const newCafLog = [...cafLog, newCafEntry];
 
@@ -214,6 +217,7 @@ export default function Index() {
 
 
   return (    
+    <GestureHandlerRootView >
     <ScrollView className="bg-white">
     <View className="flex justify-start h-full p-10">
       <StatusBar style="auto"/>      
@@ -252,7 +256,7 @@ export default function Index() {
         />
       </View>
 
-      <DateSelector />
+      <TimeSlider />
 
       <View className="flex flex-wrap flex-row justify-between">
         {
@@ -290,5 +294,6 @@ export default function Index() {
       </View>  
     </View>
     </ScrollView>
+    </GestureHandlerRootView>
   );
 };

@@ -54,3 +54,16 @@ export const useSettingsStore = create<SettingsStore>((set) => ({
         set({ threshold: newTimeZone });
     },
 }));
+
+
+type TimeStore = {
+    selectedTime: Date;
+    setSelectedTime: (newTime: Date) => void;
+};
+
+export const useTimeStore = create<TimeStore>((set) => ({
+    selectedTime: new Date(), // Default to current time
+    setSelectedTime: (newTime: Date) => {
+        set({ selectedTime: newTime });
+    },
+}));
