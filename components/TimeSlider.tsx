@@ -34,7 +34,7 @@ const TimeSlider = () => {
 
     const handleReset = () => {
         progress.value = 50; 
-        setSelectedTime(new Date()); 
+        setCurrentTime(new Date()); 
       };
 
     return (
