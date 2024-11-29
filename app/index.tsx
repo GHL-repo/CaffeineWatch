@@ -116,7 +116,13 @@ export default function Index() {
   // Caflog
   const handleAddCafLog = (name, amount) => {
     // const date = new Date(new Date().setHours(new Date().getHours() + timeZone)).toISOString(); 
-    const date = selectedTime.toISOString(); 
+    // const date = selectedTime.toISOString(); 
+    // const date = new Date(selectedTime.setHours(selectedTime.getHours() + timeZone)).toISOString(); 
+
+    const selectedTimeCopy = new Date(selectedTime); 
+    selectedTimeCopy.setHours(selectedTimeCopy.getHours() + timeZone);
+    const date = selectedTimeCopy.toISOString(); 
+
     const newCafEntry = { timeStamp: date, nameOfDrink: name, amountOfMg: amount };
     const newCafLog = [...cafLog, newCafEntry];
 
