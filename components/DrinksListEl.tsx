@@ -1,6 +1,6 @@
 import { Text, View, TouchableOpacity, Image } from "react-native";
 import edit from "../assets/icons/edit.png";
-import graph from "../assets/icons/trash.png";
+import trash from "../assets/icons/trash.png";
 import coffee from "../assets/icons/coffee.png";
 
 
@@ -39,7 +39,7 @@ export default function DrinksListEl ({
         </TouchableOpacity>
         <TouchableOpacity onPress={() => handlePressDelete(item.id)}>
           <Image 
-            source={graph}
+            source={trash}
             className="w-[22px] h-[22px] ml-2"
             resizeMode="contain"
           />

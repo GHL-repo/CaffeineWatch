@@ -1,84 +1,85 @@
 import React, { useState } from 'react';
 import { Pressable, Text, View } from 'react-native';
 import { Slider } from 'react-native-awesome-slider';
-import { format, addMinutes } from 'date-fns';
+import { format, addMinutes, subMinutes } from 'date-fns';
 import { useSharedValue } from 'react-native-reanimated';
-import { ArrowPathIcon } from "react-native-heroicons/mini";
+import { ClockIcon } from "react-native-heroicons/mini";
 import { useTimeStore } from '@/store/store';
 
 
 
 const TimeSlider = () => {
-    const progress = useSharedValue(50);
+    const progress = useSharedValue(100);
     const min = useSharedValue(0);
     const max = useSharedValue(100);
-    const rangeMinutes = 3 * 60; // 3 hours in minutes
+    const rangeMinutes = 6 * 60; // 3 hours in minutes
   
     // State for displaying the current time
     const { selectedTime, setSelectedTime } = useTimeStore();
     const [currentTime, setCurrentTime] = useState(new Date());
   
     const handleSliderChange = (value) => {
-        const percentageOffset = (value - 50) / 50; // Calculate offset percentage (-1 to +1)
-        const timeOffset = rangeMinutes * percentageOffset; // Convert percentage to minutes
-        const newTime = addMinutes(new Date(), timeOffset); // Adjust current time by offset
-        setCurrentTime(newTime); 
+        const percentageOffset = value / 100; // Normalize slider value (0 to 1)
+        const timeOffset = rangeMinutes * percentageOffset; // Calculate offset in minutes
+        const newTime = subMinutes(new Date(), rangeMinutes - timeOffset); // Adjust to past time
+        setCurrentTime(newTime); // Update display
     };
 
     const handleSliderStop = (value) => {
-        const percentageOffset = (value - 50) / 50; // Calculate offset percentage (-1 to +1)
-        const timeOffset = rangeMinutes * percentageOffset; // Convert percentage to minutes
-        const newTime = addMinutes(new Date(), timeOffset); // Adjust current time by offset
-        setSelectedTime(newTime); 
-    }
+        const percentageOffset = value / 100; // Normalize slider value (0 to 1)
+        const timeOffset = rangeMinutes * percentageOffset; // Calculate offset in minutes
+        const newTime = subMinutes(new Date(), rangeMinutes - timeOffset); // Adjust to past time
+        setSelectedTime(newTime); // Update store
+    };
 
     const handleReset = () => {
-        progress.value = 50; 
-        setCurrentTime(new Date()); 
-        setSelectedTime(new Date()); 
-      };
+        progress.value = 100; // Reset slider to 100% (now)
+        const now = new Date();
+        setCurrentTime(now); // Reset displayed time
+        setSelectedTime(now); // Reset store time
+    };
+
+    const customThumb = () => (
+        <View className="p-[2px] rounded-full bg-zinc-700">
+            <ClockIcon color="white"/>
+        </View>
+    );
 
     return (
-        <View className="flex-1 justify-center items-center p-2">
+        <View className="p-2">
 
         <View className="flex flex-row">
 
             <View className="flex-1" />
 
-
-            <Text className="flex-1 text-center text-xl font-semibold">
-                {format(currentTime, 'HH:mm')}
-            </Text>
-
-            <View className="flex-1 items-end">
-                <Pressable
-                    onPress={handleReset}
-                    className="p-1"
-                >
-                    <ArrowPathIcon color="black"/>
+             <View className="flex-1 items-center">
+                <Pressable onPress={handleReset} className="p-1">
+                    <Text className="text-xl font-semibold">
+                        {format(currentTime, 'HH:mm')}
+                    </Text>
                 </Pressable>
-            </View>
-            
+            </View>            
+
+            <View className="flex-1" />
 
         </View>
   
         <Slider
-          className="mt-3 mb-3 w-full"
-          theme={{
-            maximumTrackTintColor: '#666',
+            className="mt-1 mb-1 w-full"
+            theme={{
+            maximumTrackTintColor: '#ccc',
             minimumTrackTintColor: '#666',
             bubbleBackgroundColor: 'transparent',
             bubbleTextColor: 'transparent', 
-          }}
-          progress={progress}
-          minimumValue={min}
-          maximumValue={max}
-          thumbWidth={20}
-          onValueChange={(value) => handleSliderChange(value)}
-          onSlidingComplete={(value) => handleSliderStop(value)}
-
-        />
-        
+            }}
+            progress={progress}
+            minimumValue={min}
+            maximumValue={max}
+            thumbWidth={20}
+            onValueChange={(value) => handleSliderChange(value)}
+            onSlidingComplete={(value) => handleSliderStop(value)}
+            renderThumb={customThumb}
+        />       
         
       </View>        
     );
