@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { Text, View, Image, Pressable, ScrollView } from "react-native";
+import { Text, View, Image, Pressable, ScrollView, TouchableOpacity } from "react-native";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFocusEffect } from '@react-navigation/native';
 import { StatusBar } from 'expo-status-bar';
@@ -11,6 +11,7 @@ import CafModal from "@/components/CafModal"
 import TimeSlider from "@/components/TimeSlider"
 import user from "../assets/icons/user.png";
 import coffee from "../assets/icons/coffee-shop.png";
+import { ArrowUturnDownIcon } from "react-native-heroicons/outline";
 import { useCaffeineStore, useTimelineStore, useSettingsStore, useTimeStore } from '@/store/store'; 
 
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
@@ -126,6 +127,18 @@ export default function Index() {
     storeCafLog(newCafLog);
   };
 
+  const handleUndoCafLog = async () => {
+    if (cafLog.length === 0) {
+      console.error("cafLog is empty, no element to delete.");
+      return;
+    }
+
+    const newCafLog = cafLog.slice(0, cafLog.length - 1);
+    await storeCafLog(newCafLog);
+    setCafLog(newCafLog);
+  };
+  
+
   // Sleeptime calculator
   const calculateSleepTime = async () => {
     let foundTime = "";
@@ -198,7 +211,7 @@ export default function Index() {
 
   // Effect hooks
   useEffect(() => {
-    updateTimeline();    
+    updateTimeline();   
   }, [cafLog]);
 
   useEffect(() => {
@@ -251,8 +264,9 @@ export default function Index() {
         <Text className="font-pregular ml-12">{mgCount}mg</Text>       
       </View>
       <Text className="font-pregular">Optimal sleep after: {sleepTime}</Text>
+
       
-      <View className="h-[200px] bg-white">
+      <View className="h-[200px]">
         <CaffeineChart 
           DATA={cafTimeline}
         />
@@ -285,15 +299,17 @@ export default function Index() {
               <Text className="text-lg font-semibold mb-3"> ({selectedCaf.mgPerCup} mg of caffeine) </Text>
             </View>
           )}
-        </CafModal>
-        
-        <CustomButton
-          title="Reset mg"
-          handlePress={resetMgCount}
-          containerStyles="bg-blue-400 h-20 p-2 w-20 mt-5"
-        />
+        </CafModal>    
+
 
       </View>  
+
+      <View className="flex-row justify-end mt-5">
+        <TouchableOpacity className="rounded-lg border p-[2px]" onPress={handleUndoCafLog}>
+          <ArrowUturnDownIcon color="black" size="20px"/>
+        </ TouchableOpacity>
+      </View>
+      
     </View>
     </ScrollView>
     </GestureHandlerRootView>
