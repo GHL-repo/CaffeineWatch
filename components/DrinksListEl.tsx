@@ -1,7 +1,8 @@
 import { Text, View, TouchableOpacity, Image } from "react-native";
 import edit from "../assets/icons/edit.png";
 import trash from "../assets/icons/trash.png";
-import coffee from "../assets/icons/coffee.png";
+import { icons } from "../constants/Icons"
+
 
 
 export default function DrinksListEl ({
@@ -15,7 +16,7 @@ export default function DrinksListEl ({
       <View className="flex flex-row justify-between items-center w-3/4">
         <View className="flex flex-row mr-1">
           <Image             
-            source={coffee}
+            source={icons[item.icon]}
             className="w-[22px] h-[22px]"
             resizeMode="contain"
           />

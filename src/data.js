@@ -2,33 +2,39 @@ export default {
   caffeineTypes: [
     {
       "id": 0,
-      "name": "Filter Coffee",
-      "mgPerCup": 95
+      "name": "Coffee",
+      "mgPerCup": 95,
+      "icon": "coffeeDefault"
     },
     {
       "id": 1,
       "name": "Espresso",
-      "mgPerCup": 63
+      "mgPerCup": 126,
+      "icon": "espresso"
     },
     {
       "id": 2,
-      "name": "Latte",
-      "mgPerCup": 132
+      "name": "Pour Over",
+      "mgPerCup": 173,
+      "icon": "pourOver"
     },
     {
       "id": 3,
       "name": "Black Tea",
-      "mgPerCup": 70
+      "mgPerCup": 70,
+      "icon": "tea"
     },
     {
       "id": 4,
       "name": "Hot Chocolate",
-      "mgPerCup": 10
+      "mgPerCup": 10,
+      "icon": "hotChocolate"
     },
     {
       "id": 5,
       "name": "Energy Drink",
-      "mgPerCup": 180
+      "mgPerCup": 180,
+      "icon": "energyDrink"
     }
   ]
 };

@@ -11,7 +11,7 @@ import CafModal from "@/components/CafModal"
 import TimeSlider from "@/components/TimeSlider"
 import user from "../assets/icons/user.png";
 import coffee from "../assets/icons/coffee-shop.png";
-import { ArrowUturnDownIcon } from "react-native-heroicons/outline";
+import { ArrowUturnLeftIcon } from "react-native-heroicons/outline";
 import { useCaffeineStore, useTimelineStore, useSettingsStore, useTimeStore } from '@/store/store'; 
 
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
@@ -114,7 +114,7 @@ export default function Index() {
   };
 
 
-  // Caflog
+  // Caflog functions
   const handleAddCafLog = (name, amount) => {
     const selectedTimeCopy = new Date(selectedTime); 
     selectedTimeCopy.setHours(selectedTimeCopy.getHours() + timeZone);
@@ -306,7 +306,7 @@ export default function Index() {
 
       <View className="flex-row justify-end mt-5">
         <TouchableOpacity className="rounded-lg border p-[2px]" onPress={handleUndoCafLog}>
-          <ArrowUturnDownIcon color="black" size="20px"/>
+          <ArrowUturnLeftIcon color="black" size="20px"/>
         </ TouchableOpacity>
       </View>
       
