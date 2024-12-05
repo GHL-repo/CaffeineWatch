@@ -48,7 +48,6 @@ export default function Profile() {
   useFocusEffect(
     useCallback(() => {
       getCafLog();
-      console.log(cafTypes);
     },[])
   );
 
@@ -79,12 +78,12 @@ export default function Profile() {
         data={flatListData}
         keyExtractor={(item) => item.date}
         renderItem={({ item }) => (
-          <View className="mb-4">
+          <View className="mb-4 w-full">
             {/* Display date */}
             <Text className="text-lg font-psemibold">{item.date}</Text>
             {/* Render drinks under the date */}
             {item.drinks.map((drink, index) => (
-              <View key={index} className="flex-row pl-3 mb-4">
+              <View key={index} className="flex-row pl-3 mb-2 justify-between w-full">
                 <Text className="text-base pr-3">{drink.timeStamp.slice(11, 16)} {drink.nameOfDrink}</Text>
                 <TouchableOpacity onPress={() => deleteCafLogEntry(drink.timeStamp)}>
                   <TrashIcon color="black" fill="white" size={22}/>
