@@ -1,10 +1,11 @@
 import React, {useEffect, useState, useCallback} from 'react';
-import { Text, TextInput, View, Button, FlatList, Alert, Modal, TouchableOpacity } from "react-native";
+import { Text, TextInput, View, Image, FlatList, Alert, Modal, TouchableOpacity } from "react-native";
 import { useFocusEffect } from '@react-navigation/native';
 import data from "../src/data";
 import DrinksListEl from "@/components/DrinksListEl";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Ionicons from '@expo/vector-icons/Ionicons';
+import { iconData } from "../constants/Icons"
 
 
 export default function Profile() {
@@ -12,9 +13,10 @@ export default function Profile() {
   const [cafTypes, setCafTypes] = useState(data.caffeineTypes);
   const [cafName, setCafName] = useState();
   const [cafMg, setCafMg] = useState();
+  const [cafIcon, setCafIcon] = useState("coffeeDefault");
   const [curEditId, setCurEditId] = useState();
   const [modalOpen, setModalOpen] = useState(false);
-  const [editModalOpen, setEditModalOpen] = useState(false);
+  const [editModalOpen, setEditModalOpen] = useState(false); 
   
 
   const handleReset = () => {
@@ -27,7 +29,7 @@ export default function Profile() {
   const handleAddCafType = () => {
     if (cafName.length > 0 && cafMg != undefined) {      
       const cafId = cafTypes.length + Math.random();
-      const newCafType = {id: cafId, name: cafName, mgPerCup: cafMg};
+      const newCafType = {id: cafId, name: cafName, mgPerCup: cafMg, icon:cafIcon};
       const newCafTypes = [...cafTypes, newCafType];
       setCafTypes(newCafTypes);
       storeCaffeineTypes(newCafTypes);
@@ -46,31 +48,37 @@ export default function Profile() {
     setCafMg(Number(val));
   };
 
+  const handleIconChange = (val) => {
+    setCafIcon(val);
+  };
+
   // DrinksListEl functions
-  const handlePressEdit = (id) => {
+  const handlePressEdit = (id) => {    
     const itemToEdit = cafTypes.find((item) => item.id === id);
 
     setCurEditId(itemToEdit.id);
     setCafName(itemToEdit.name);
     setCafMg(String(itemToEdit.mgPerCup));
+    setCafIcon(itemToEdit.icon);
     setEditModalOpen(true);
   };
 
-  const handleSaveEdit = (id, newName, newMg) => {
+  const handleSaveEdit = (id, newName, newMg, newIcon) => {
 
     const newCafTypes = cafTypes.map(item => {
       if (item.id === id) {
         return {
           ...item,        // Copy existing object properties
-          name: newName,  // Update name
-          mgPerCup: Number(newMg) // Update mgPerCup
+          name: newName,
+          mgPerCup: Number(newMg),
+          icon: newIcon
         };
       }
       return item; // Return unchanged object for others
     });
-
     setCafTypes(newCafTypes);
     storeCaffeineTypes(newCafTypes);
+    setCafIcon("coffeeDefault");
     setEditModalOpen(false);
   };
 
@@ -109,6 +117,7 @@ export default function Profile() {
   }, []);
 
   useFocusEffect(
+    
     useCallback(() => {
       getCaffeineTypes();
     },[])
@@ -123,17 +132,17 @@ export default function Profile() {
         <Ionicons 
           name="add-circle-outline" 
           size={32} 
-          onPress={() => {setCafName(""); setModalOpen(true);}}
+          onPress={() => {setCafName(""); setCafIcon("coffeeDefault"); setModalOpen(true);}}
         />
       </View> 
   
     {/* Add new drink modal*/}
     <Modal visible={modalOpen} animationType="slide" >
-    <View className="h-full bg-white p-8 mt-14">
+    <View className="bg-white p-8 mt-14">
       <View className="mb-2 self-center">
       <Ionicons 
         name="close-circle-outline" size={32}
-        onPress={() => setModalOpen(false)}
+        onPress={() => {setModalOpen(false)}}
       />
       </View > 
       
@@ -151,7 +160,25 @@ export default function Profile() {
         keyboardType="numeric"
       />
 
-      <View className="flex flex-row justify-between mt-1">
+      <Text className="mb-1 pl-4">Preferred icon:</Text>
+      <View className="flex flex-wrap flex-row justify-between border pt-4">
+        
+        {iconData.map((item) => (
+          <View key={item.id} className="items-center mb-4 w-[25%]">
+            <TouchableOpacity onPress={() => handleIconChange(item.id)}>
+              <Image
+                source={item.icon}
+                className={`w-[50px] h-[50px] ${item.id === cafIcon ? "" : ""}`}
+                style={item.id === cafIcon ? {tintColor: "#D72638"} : {tintColor: "black"}}
+                resizeMode="contain"
+              />
+            </TouchableOpacity>
+           </View>
+        ))}
+      </View>      
+
+
+      <View className="flex flex-row justify-between mt-3">
         <TouchableOpacity
         onPress={handleReset}
         className="p-2 bg-purple-600 rounded-lg flex-1 mr-2"
@@ -194,16 +221,35 @@ export default function Profile() {
         keyboardType="numeric"
       />
 
+      <Text className="mb-1 pl-4">Preferred icon:</Text>
+      <View className="flex flex-wrap flex-row justify-between border pt-4">
+        
+        {iconData.map((item) => (
+          <View key={item.id} className="items-center mb-4 w-[25%]">
+            <TouchableOpacity onPress={() => handleIconChange(item.id)}>
+              <Image
+                source={item.icon}
+                className={`w-[50px] h-[50px] ${item.id === cafIcon ? "" : ""}`}
+                style={item.id === cafIcon ? {tintColor: "#D72638"} : {tintColor: "black"}}
+                resizeMode="contain"
+              />
+            </TouchableOpacity>
+           </View>
+        ))}
+      </View>      
+
+
       <View className="flex flex-row justify-between mt-1">
         <TouchableOpacity
           onPress={() => {
-            handleSaveEdit(curEditId, cafName, cafMg);   
+            handleSaveEdit(curEditId, cafName, cafMg, cafIcon);   
           }}
           className="p-2 bg-blue-600 rounded-lg flex-1 mr-2"
           >
           <Text className="text-center text-white font-semibold">Save Changes</Text>
         </TouchableOpacity>
       </View>
+      
       
     </View>
     </Modal> 
@@ -225,6 +271,8 @@ export default function Profile() {
     </View>
   );
 }
+
+
 
 
 
