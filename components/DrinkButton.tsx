@@ -1,7 +1,8 @@
-import { ActivityIndicator, Text, TouchableOpacity } from "react-native";
+import { ActivityIndicator, Text, TouchableOpacity, Image } from "react-native";
 
-const CustomButton = ({
+const DrinkButton = ({
   title,
+  icon,
   handlePress,
   containerStyles,
   textStyles,
@@ -15,7 +16,13 @@ const CustomButton = ({
         isLoading ? "opacity-50" : ""
       }`}
       disabled={isLoading}
-    >
+    > 
+       <Image
+        source={icon}
+        className="w-[50px] h-[50px]"
+        style={{tintColor: "black"}}
+        resizeMode="contain"
+      />
       <Text className={`text-primary font-psemibold text-sm ${textStyles}`}>
         {title}
       </Text>
@@ -32,4 +39,4 @@ const CustomButton = ({
   );
 };
 
-export default CustomButton;
+export default DrinkButton;

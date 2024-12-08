@@ -5,15 +5,16 @@ import { useFocusEffect } from '@react-navigation/native';
 import { StatusBar } from 'expo-status-bar';
 import { Link } from "expo-router";
 import { addHours, format } from 'date-fns';
-import CustomButton from '@/components/CustomButton';
+import DrinkButton from '@/components/DrinkButton';
 import CaffeineChart from '@/components/CaffeineChart';
 import CafModal from "@/components/CafModal"
 import TimeSlider from "@/components/TimeSlider"
 import user from "../assets/icons/user.png";
 import coffee from "../assets/icons/coffee-shop.png";
+import bean from "../assets/icons/coffee-bean.png";
 import { ArrowUturnLeftIcon } from "react-native-heroicons/outline";
 import { useCaffeineStore, useTimelineStore, useSettingsStore, useTimeStore } from '@/store/store'; 
-
+import { iconData } from "../constants/Icons"
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 
@@ -233,8 +234,8 @@ export default function Index() {
 
   return (    
     <GestureHandlerRootView >
-    <ScrollView className="bg-white">
-    <View className="flex justify-start h-full p-10">
+    {/* <ScrollView className="bg-white"> */}
+    <View className="flex justify-start h-full p-10 bg-white">
       <StatusBar style="auto"/>      
       
       <View className="flex flex-row justify-between h-[40px] mb-6">
@@ -274,19 +275,59 @@ export default function Index() {
 
       <TimeSlider />
 
-      <View className="flex flex-wrap flex-row justify-between">
+      
+      <View className="flex flex-wrap flex-row justify-between mt-3">
+      
+        <ScrollView horizontal={true}>
         {
-          cafTypes.map( caffeineType => {
+          cafTypes.map((caffeineType) => {
+            const matchingIcon = iconData.find((icon) => icon.id === caffeineType.icon)?.icon;
+
             return (
-              <CustomButton 
+              <View
+                className="border h-[160px] w-[120px] p-2 mr-4 rounded-md flex items-center justify-center bg-secondary "
                 key={caffeineType.id}
-                title={caffeineType["name"]}
-                handlePress={() => openCafModal({ name: caffeineType.name, mgPerCup: caffeineType.mgPerCup })}
-                containerStyles="h-20 p-2 w-20 mt-5"
-              />
-            )
+              >
+                <TouchableOpacity
+                  className="flex items-center justify-center"
+                  onPress={() =>
+                    openCafModal({
+                      name: caffeineType.name,
+                      mgPerCup: caffeineType.mgPerCup,
+                    })
+                  }
+                >
+                  {matchingIcon ? (
+                    <View className="p-2 rounded-full bg-white">
+                    <Image
+                      source={matchingIcon}
+                      className="h-10 w-10 flex mb-1"
+                      style={{ tintColor: "black" }}
+                      resizeMode="contain"
+                    />
+                    </View>
+                  ) : (
+                    <Text className="text-center">No Icon</Text>
+                  )}
+
+                  <Text className="text-center font-bold mb-2">{caffeineType.name}</Text>
+                  {/* <Text className="text-center italic">250ml</Text> */}
+                  <View className="flex-row items-center">
+                    <Image
+                        source={bean}
+                        className="h-3 w-2 mr-1"
+                        style={{ tintColor: "black" }}
+                        resizeMode="contain"
+                      />
+                    <Text className="text-center text-sm italic">{caffeineType.mgPerCup}mg</Text>
+                  </View>
+                </TouchableOpacity>
+              </View>
+            );
           })
         }
+        </ScrollView>
+
 
         <CafModal 
           isVisible={isCafModalVisible} 
@@ -296,7 +337,7 @@ export default function Index() {
           {selectedCaf && (
             <View>
               <Text className="text-lg font-semibold mb-3"> {selectedCaf.name} </Text>
-              <Text className="text-lg font-semibold mb-3"> ({selectedCaf.mgPerCup} mg of caffeine) </Text>
+              <Text className="text-lg font-semibold mb-3"> ({selectedCaf.mgPerCup} mg of caffeine) </Text>              
             </View>
           )}
         </CafModal>    
@@ -311,7 +352,7 @@ export default function Index() {
       </View>
       
     </View>
-    </ScrollView>
+    {/* </ScrollView> */}
     </GestureHandlerRootView>
   );
 };
