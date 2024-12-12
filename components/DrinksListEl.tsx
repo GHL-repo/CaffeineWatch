@@ -21,7 +21,7 @@ export default function DrinksListEl ({
             resizeMode="contain"
           />
           <Text className="text-primary font-psemibold text-sm ml-2">
-            {item.name}
+            {item.name.length > 18 ? `${item.name.slice(0, 18)}...` : item.name}
           </Text>
         </View>
         
