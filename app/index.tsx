@@ -210,7 +210,7 @@ export default function Index() {
     }, 500);
 
     return () => clearInterval(interval);
-  }, [mgCount]);
+  }, [cafTimeline]);
 
   useFocusEffect(
     useCallback(() => {
