@@ -1,33 +1,33 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
-  Text,
-  View,
   Image,
   Pressable,
   ScrollView,
+  Text,
   TouchableOpacity,
+  View,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFocusEffect } from "@react-navigation/native";
-import { StatusBar } from "expo-status-bar";
-import { Link } from "expo-router";
 import { addHours, format } from "date-fns";
-import DrinkButton from "@/components/DrinkButton";
+import { Link } from "expo-router";
+import { StatusBar } from "expo-status-bar";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { ArrowUturnLeftIcon } from "react-native-heroicons/outline";
 import CaffeineChart from "@/components/CaffeineChart";
 import CafMenu from "@/components/CafMenu";
+import DrinkButton from "@/components/DrinkButton";
 import TimeSlider from "@/components/TimeSlider";
-import user from "../assets/icons/user.png";
-import coffee from "../assets/icons/coffee-shop.png";
-import bean from "../assets/icons/coffee-bean.png";
-import { ArrowUturnLeftIcon } from "react-native-heroicons/outline";
+import { iconData } from "@/constants/Icons";
 import {
   useCaffeineStore,
-  useTimelineStore,
   useSettingsStore,
+  useTimelineStore,
   useTimeStore,
 } from "@/store/store";
-import { iconData } from "../constants/Icons";
-import { GestureHandlerRootView } from "react-native-gesture-handler";
+import bean from "../assets/icons/coffee-bean.png";
+import coffee from "../assets/icons/coffee-shop.png";
+import user from "../assets/icons/user.png";
 
 export default function Index() {
   const { cafTypes, setCafTypes } = useCaffeineStore();
@@ -46,7 +46,7 @@ export default function Index() {
   const [sleepTime, setSleepTime] = useState("22:30");
 
   // Test functions
-  // const resetMgCount = () => {setMgCount(0); storeMgData(0); resetLog();}
+  // const resetMgCount = () => {setMgCount(0); storeMgData(0); resetLog();};
   const resetMgCount = () => {
     setMgCount(0);
     resetLog();

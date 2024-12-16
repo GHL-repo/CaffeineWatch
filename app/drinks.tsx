@@ -1,25 +1,24 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
+  Alert,
+  Image,
+  Modal,
   Text,
   TextInput,
-  View,
-  Image,
-  FlatList,
-  Alert,
-  Modal,
   TouchableOpacity,
+  View,
 } from "react-native";
-import { useFocusEffect } from "@react-navigation/native";
-import data from "../src/data";
-import DrinksListEl from "@/components/DrinksListEl";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import Ionicons from "@expo/vector-icons/Ionicons";
-import { iconData } from "../constants/Icons";
 import DraggableFlatList, {
   OpacityDecorator,
   RenderItemParams,
 } from "react-native-draggable-flatlist";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import Ionicons from "@expo/vector-icons/Ionicons";
+import { useFocusEffect } from "@react-navigation/native";
+import DrinksListEl from "@/components/DrinksListEl";
+import { iconData } from "../constants/Icons";
+import data from "../src/data";
 
 export default function Profile() {
   const [cafTypes, setCafTypes] = useState(data.caffeineTypes);
