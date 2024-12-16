@@ -239,7 +239,7 @@ export default function Index() {
               <Pressable>
                 <Image
                   source={bean}
-                  className="w-[40px] h-[40px]"
+                  className="w-[40px] h-[40px] opacity-0"
                   resizeMode="contain"
                 />
               </Pressable>
