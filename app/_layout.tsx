@@ -6,7 +6,7 @@ import { useEffect } from "react";
 import {
   configureReanimatedLogger,
   ReanimatedLogLevel,
-} from 'react-native-reanimated';
+} from "react-native-reanimated";
 
 // This is the default configuration
 configureReanimatedLogger({
@@ -29,21 +29,21 @@ const RootLayout = () => {
     "Poppins-Thin": require("../assets/fonts/Poppins-Thin.ttf"),
   });
 
-  useEffect(() =>{
+  useEffect(() => {
     if (error) throw error;
-  
+
     if (fontsLoaded) SplashScreen.hideAsync();
-  }, [fontsLoaded, error])
+  }, [fontsLoaded, error]);
 
   if (!fontsLoaded && !error) return null;
-  
+
   return (
     <Stack>
-      <Stack.Screen name="index" options={{ headerShown: true }} />
-      <Stack.Screen name="profile" options={{ headerShown: true }} />
-      <Stack.Screen name="test" options={{ headerShown: true }} />
+      <Stack.Screen name="index" options={{ headerShown: false }} />
+      <Stack.Screen name="profile" options={{ headerShown: false }} />
+      <Stack.Screen name="drinks" options={{ headerShown: false }} />
     </Stack>
   );
-}
+};
 
 export default RootLayout;

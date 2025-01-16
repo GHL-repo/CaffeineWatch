@@ -66,34 +66,36 @@ export default function Profile() {
 
   return (
     <View className="flex-1 items-start justify-start bg-white p-10">
-      <Text className="mb-3 font-bold text-lg">Recent drinks</Text>
+      <View className="mt-5">
+        <Text className="mb-3 font-bold text-lg">Recent drinks</Text>
 
-      <FlatList
-        data={flatListData}
-        keyExtractor={(item) => item.date}
-        renderItem={({ item }) => (
-          <View className="mb-4 w-full">
-            {/* Display date */}
-            <Text className="text-lg font-psemibold">{item.date}</Text>
-            {/* Render drinks under the date */}
-            {item.drinks.map((drink, index) => (
-              <View
-                key={index}
-                className="flex-row pl-3 mb-2 justify-between w-full"
-              >
-                <Text className="text-base pr-3">
-                  {drink.timeStamp.slice(11, 16)} {drink.nameOfDrink}
-                </Text>
-                <TouchableOpacity
-                  onPress={() => deleteCafLogEntry(drink.timeStamp)}
+        <FlatList
+          data={flatListData}
+          keyExtractor={(item) => item.date}
+          renderItem={({ item }) => (
+            <View className="mb-4 w-full">
+              {/* Display date */}
+              <Text className="text-lg font-psemibold">{item.date}</Text>
+              {/* Render drinks under the date */}
+              {item.drinks.map((drink, index) => (
+                <View
+                  key={index}
+                  className="flex-row pl-3 mb-2 justify-between w-full"
                 >
-                  <TrashIcon color="black" fill="white" size={22} />
-                </TouchableOpacity>
-              </View>
-            ))}
-          </View>
-        )}
-      />
+                  <Text className="text-base pr-3">
+                    {drink.timeStamp.slice(11, 16)} {drink.nameOfDrink}
+                  </Text>
+                  <TouchableOpacity
+                    onPress={() => deleteCafLogEntry(drink.timeStamp)}
+                  >
+                    <TrashIcon color="black" fill="white" size={22} />
+                  </TouchableOpacity>
+                </View>
+              ))}
+            </View>
+          )}
+        />
+      </View>
     </View>
   );
 }

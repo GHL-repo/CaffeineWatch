@@ -140,7 +140,7 @@ export default function Profile() {
 
   return (
     <View className="h-full bg-white p-8">
-      <View>
+      <View className="mt-5">
         <View className="mb-2 self-center">
           <Ionicons
             name="add-circle-outline"

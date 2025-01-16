@@ -222,7 +222,7 @@ export default function Index() {
   return (
     <GestureHandlerRootView>
       <ScrollView className="bg-white">
-        <View className="flex justify-start h-full p-10 bg-white">
+        <View className="flex justify-start h-full p-10 bg-white mt-5">
           <StatusBar style="auto" />
 
           <View className="flex flex-row justify-between h-[40px] mb-6">
