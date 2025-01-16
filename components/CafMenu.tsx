@@ -1,32 +1,15 @@
-import React, { useRef, useEffect, useState } from "react";
-import {
-  ScrollView,
-  View,
-  Text,
-  Image,
-  TouchableOpacity,
-  Dimensions,
-} from "react-native";
+import React, { useState } from "react";
+import { View, Text, Image, TouchableOpacity } from "react-native";
 import bean from "../assets/icons/coffee-bean.png";
 import CafModal from "@/components/CafModal";
 import {
-  useCaffeineStore,
   useTimelineStore,
   useSettingsStore,
   useTimeStore,
 } from "@/store/store";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const { width } = Dimensions.get("window");
-
 const CafMenu = ({ cafTypes, iconData, mgCount, setMgCount }) => {
-  const scrollRef = useRef(null);
-  const copies = 5;
-  const loopedData = Array(copies).fill(cafTypes).flat();
-  const xStart = 192 + (cafTypes.length - 2) * 136;
-  const xBegin = 130 + (cafTypes.length - 1) * 136;
-  const xEnd = 128 + (cafTypes.length - 3) * 136;
-
   const { cafLog, setCafLog } = useTimelineStore();
   const { selectedTime } = useTimeStore();
   const { timeZone } = useSettingsStore();
@@ -80,92 +63,57 @@ const CafMenu = ({ cafTypes, iconData, mgCount, setMgCount }) => {
     }
   };
 
-  const resetStartPos = (pos) => {
-    scrollRef.current.scrollTo({ x: pos, animated: false });
-  };
-
-  const handleScroll = (event) => {
-    const { contentOffset, contentSize, layoutMeasurement } = event.nativeEvent;
-    const isStart = contentOffset.x <= 0;
-    const isEnd =
-      contentOffset.x + layoutMeasurement.width >= contentSize.width;
-
-    if (isStart) {
-      resetStartPos(xBegin);
-    }
-    if (isEnd) {
-      resetStartPos(xEnd);
-    }
-  };
-
-  useEffect(() => {
-    if (scrollRef.current) {
-      resetStartPos(xStart);
-    }
-  }, []);
-
   return (
     <View className="mt-4">
-      <ScrollView
-        ref={scrollRef}
-        horizontal
-        contentOffset={{ x: xStart, y: 0 }}
-        onScroll={handleScroll}
-        showsHorizontalScrollIndicator={false}
-      >
-        {loopedData.map((caffeineType, index) => {
+      <View className="flex flex-row flex-wrap justify-between">
+        {cafTypes.map((caffeineType, index) => {
           const matchingIcon = iconData.find(
             (icon) => icon.id === caffeineType.icon,
           )?.icon;
 
           return (
-            <View
-              className="border h-[160px] w-[120px] p-2 mr-4 rounded-md flex items-center justify-center bg-secondary "
+            <TouchableOpacity
               key={index}
+              className="w-[88px] h-[120px] mb-[15px] rounded-lg bg-gray-50 items-center justify-center border border-gray-300"
+              onPress={() =>
+                openCafModal({
+                  name: caffeineType.name,
+                  mgPerCup: caffeineType.mgPerCup,
+                })
+              }
             >
-              <TouchableOpacity
-                className="flex items-center justify-center"
-                onPress={() =>
-                  openCafModal({
-                    name: caffeineType.name,
-                    mgPerCup: caffeineType.mgPerCup,
-                  })
-                }
-              >
-                {matchingIcon ? (
-                  <View className="p-2 rounded-full bg-white border-2">
-                    <Image
-                      source={matchingIcon}
-                      className="h-10 w-10 flex mb-1"
-                      style={{ tintColor: "black" }}
-                      resizeMode="contain"
-                    />
-                  </View>
-                ) : (
-                  <Text className="text-center">No Icon</Text>
-                )}
-
-                <Text className="text-center font-bold mt-3">
-                  {caffeineType.name.length > 27
-                    ? `${caffeineType.name.slice(0, 27)}...`
-                    : caffeineType.name}
-                </Text>
-                <View className="flex-row items-center">
+              {matchingIcon ? (
+                <View className="p-1.5 rounded-full bg-white border-2">
                   <Image
-                    source={bean}
-                    className="h-3 w-2 mr-1"
+                    source={matchingIcon}
+                    className="h-8 w-8 flex mb-1"
                     style={{ tintColor: "black" }}
                     resizeMode="contain"
                   />
-                  <Text className="text-center text-sm italic">
-                    {caffeineType.mgPerCup}mg
-                  </Text>
                 </View>
-              </TouchableOpacity>
-            </View>
+              ) : (
+                <Text className="text-center">No Icon</Text>
+              )}
+              <Text className="text-center font-bold mt-2" numberOfLines={1}>
+                {caffeineType.name.length > 10
+                  ? `${caffeineType.name.slice(0, 8)}...`
+                  : caffeineType.name}
+              </Text>
+              <View className="flex-row items-center">
+                <Image
+                  source={bean}
+                  className="h-3 w-2 mr-1"
+                  style={{ tintColor: "black" }}
+                  resizeMode="contain"
+                />
+                <Text className="text-center text-sm italic">
+                  {caffeineType.mgPerCup}mg
+                </Text>
+              </View>
+            </TouchableOpacity>
           );
         })}
-      </ScrollView>
+      </View>
       <CafModal
         isVisible={isCafModalVisible}
         onClose={closeCafModal}
@@ -174,12 +122,10 @@ const CafMenu = ({ cafTypes, iconData, mgCount, setMgCount }) => {
         {selectedCaf && (
           <View>
             <Text className="text-lg font-semibold mb-3">
-              {" "}
-              {selectedCaf.name}{" "}
+              {selectedCaf.name}
             </Text>
             <Text className="text-lg font-semibold mb-3">
-              {" "}
-              ({selectedCaf.mgPerCup} mg of caffeine){" "}
+              ({selectedCaf.mgPerCup} mg of caffeine)
             </Text>
           </View>
         )}

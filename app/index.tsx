@@ -16,14 +16,12 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { ArrowUturnLeftIcon } from "react-native-heroicons/outline";
 import CaffeineChart from "@/components/CaffeineChart";
 import CafMenu from "@/components/CafMenu";
-import DrinkButton from "@/components/DrinkButton";
 import TimeSlider from "@/components/TimeSlider";
 import { iconData } from "@/constants/Icons";
 import {
   useCaffeineStore,
   useSettingsStore,
   useTimelineStore,
-  useTimeStore,
 } from "@/store/store";
 import bean from "../assets/icons/coffee-bean.png";
 import coffee from "../assets/icons/coffee-shop.png";
@@ -33,7 +31,6 @@ export default function Index() {
   const { cafTypes, setCafTypes } = useCaffeineStore();
   const { cafLog, setCafLog } = useTimelineStore();
   const { cafTimeline, setCafTimeline } = useTimelineStore();
-  const { selectedTime } = useTimeStore();
 
   // Settings
   const { threshold } = useSettingsStore();
@@ -44,13 +41,6 @@ export default function Index() {
   // Calculated
   const [mgCount, setMgCount] = useState(0);
   const [sleepTime, setSleepTime] = useState("22:30");
-
-  // Test functions
-  // const resetMgCount = () => {setMgCount(0); storeMgData(0); resetLog();};
-  const resetMgCount = () => {
-    setMgCount(0);
-    resetLog();
-  };
 
   const resetLog = async () => {
     const newCafLog = [];
@@ -105,7 +95,6 @@ export default function Index() {
   const updateTimeline = async () => {
     const timeline = generateTimeline(range, offSet, timeZone, threshold);
     const populatedTimeline = populateTimeline(timeline, cafLog);
-
     setCafTimeline(populatedTimeline);
   };
 
@@ -220,71 +209,69 @@ export default function Index() {
   );
 
   return (
-    <GestureHandlerRootView>
-      <ScrollView className="bg-white">
-        <View className="flex justify-start h-full p-10 bg-white mt-5">
-          <StatusBar style="auto" />
+    <GestureHandlerRootView className="bg-white">
+      <View className="flex justify-start h-full p-10 mt-5">
+        <StatusBar style="auto" />
 
-          <View className="flex flex-row justify-between h-[40px] mb-6">
-            <Link className="" href="/profile" asChild>
-              <Pressable>
-                <Image
-                  source={user}
-                  className="w-[40px] h-[40px]"
-                  resizeMode="contain"
-                />
-              </Pressable>
-            </Link>
-            <Link className="" href="/test" asChild>
-              <Pressable>
-                <Image
-                  source={bean}
-                  className="w-[40px] h-[40px] opacity-0"
-                  resizeMode="contain"
-                />
-              </Pressable>
-            </Link>
-            <Link className="" href="/drinks" asChild>
-              <Pressable>
-                <Image
-                  source={coffee}
-                  className="w-[40px] h-[40px]"
-                  resizeMode="contain"
-                />
-              </Pressable>
-            </Link>
-          </View>
+        <View className="flex flex-row justify-between h-[40px] mb-6">
+          <Link className="" href="/profile" asChild>
+            <Pressable>
+              <Image
+                source={user}
+                className="w-[40px] h-[40px]"
+                resizeMode="contain"
+              />
+            </Pressable>
+          </Link>
+          <Link className="" href="/test" asChild>
+            <Pressable>
+              <Image
+                source={bean}
+                className="w-[40px] h-[40px] opacity-0"
+                resizeMode="contain"
+              />
+            </Pressable>
+          </Link>
+          <Link className="" href="/drinks" asChild>
+            <Pressable>
+              <Image
+                source={coffee}
+                className="w-[40px] h-[40px]"
+                resizeMode="contain"
+              />
+            </Pressable>
+          </Link>
+        </View>
 
-          <View className="flex justify-between flex-row">
-            <Text className="font-pregular">Current caffeine amount: </Text>
-            <Text className="font-pregular ml-12">{mgCount}mg</Text>
-          </View>
-          <Text className="font-pregular">
-            Optimal sleep after: {sleepTime}
-          </Text>
+        <View className="flex justify-between flex-row">
+          <Text className="font-pregular">Current caffeine amount: </Text>
+          <Text className="font-pregular ml-12">{mgCount}mg</Text>
+        </View>
+        <Text className="font-pregular">Optimal sleep after: {sleepTime}</Text>
 
-          <View className="h-[200px]">
-            <CaffeineChart DATA={cafTimeline} />
-          </View>
+        <View className="h-[200px]">
+          <CaffeineChart DATA={cafTimeline} />
+        </View>
 
-          <TimeSlider />
+        <TimeSlider />
 
+        <ScrollView style={{ flex: 1 }} contentContainerStyle={{ flexGrow: 1 }}>
           <CafMenu
             cafTypes={cafTypes}
             iconData={iconData}
             setMgCount={setMgCount}
           />
+        </ScrollView>
 
-          <View className="flex-row justify-end mt-5">
-            <TouchableOpacity
-              className="rounded-lg border p-[2px]"
-              onPress={handleUndoCafLog}
-            >
-              <ArrowUturnLeftIcon color="black" size="20px" />
-            </TouchableOpacity>
-          </View>
+        <View className="flex-row justify-end mt-1">
+          <TouchableOpacity
+            className="rounded-lg border p-[2px]"
+            onPress={handleUndoCafLog}
+          >
+            <ArrowUturnLeftIcon color="black" size="20px" />
+          </TouchableOpacity>
         </View>
-      </ScrollView>
+      </View>
     </GestureHandlerRootView>
   );
 }
