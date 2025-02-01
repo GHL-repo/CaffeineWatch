@@ -9,7 +9,13 @@ import {
 } from "@/store/store";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const CafMenu = ({ cafTypes, iconData, mgCount, setMgCount }) => {
+const CafMenu = ({
+  cafTypes,
+  iconData,
+  mgCount,
+  setMgCount,
+  useShowBackBtn,
+}) => {
   const { cafLog, setCafLog } = useTimelineStore();
   const { selectedTime } = useTimeStore();
   const { timeZone } = useSettingsStore();
@@ -51,6 +57,7 @@ const CafMenu = ({ cafTypes, iconData, mgCount, setMgCount }) => {
 
     setCafLog(newCafLog);
     storeCafLog(newCafLog);
+    useShowBackBtn(true);
   };
 
   // AsyncStore functions

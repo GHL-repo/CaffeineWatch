@@ -31,6 +31,7 @@ export default function Index() {
   const { cafTypes, setCafTypes } = useCaffeineStore();
   const { cafLog, setCafLog } = useTimelineStore();
   const { cafTimeline, setCafTimeline } = useTimelineStore();
+  const [showBackBtn, useShowBackBtn] = useState(true);
 
   // Settings
   const { threshold } = useSettingsStore();
@@ -205,6 +206,7 @@ export default function Index() {
     useCallback(() => {
       getCaffeineTypes();
       getCafLog();
+      useShowBackBtn(false);
     }, []),
   );
 
@@ -249,6 +251,17 @@ export default function Index() {
         </View>
         <Text className="font-pregular">Optimal sleep after: {sleepTime}</Text>
 
+        {showBackBtn && (
+          <View className="flex-row justify-end mt-1 mr-2 -mb-[35px] z-10">
+            <TouchableOpacity
+              className="rounded-lg border p-[2px] bg-white"
+              onPress={handleUndoCafLog}
+            >
+              <ArrowUturnLeftIcon color="black" size="26px" />
+            </TouchableOpacity>
+          </View>
+        )}
+
         <View className="h-[200px]">
           <CaffeineChart DATA={cafTimeline} />
         </View>
@@ -260,17 +273,9 @@ export default function Index() {
             cafTypes={cafTypes}
             iconData={iconData}
             setMgCount={setMgCount}
+            useShowBackBtn={useShowBackBtn}
           />
         </ScrollView>
-
-        <View className="flex-row justify-end mt-1">
-          <TouchableOpacity
-            className="rounded-lg border p-[2px]"
-            onPress={handleUndoCafLog}
-          >
-            <ArrowUturnLeftIcon color="black" size="20px" />
-          </TouchableOpacity>
-        </View>
       </View>
     </GestureHandlerRootView>
   );
