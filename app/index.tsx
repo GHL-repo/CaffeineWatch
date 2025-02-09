@@ -54,7 +54,6 @@ export default function Index() {
     updateTimeline();
   };
 
-  // Timeline functions
   const generateTimeline = (range, offSet, timeZone, threshold) => {
     const currentDate = new Date(
       new Date().setHours(new Date().getHours() + timeZone),
@@ -62,8 +61,13 @@ export default function Index() {
     const startingDate = new Date(currentDate);
     startingDate.setHours(startingDate.getHours() - offSet);
 
-    return Array.from({ length: range * 60 }, (_, t) => {
-      const date = new Date(startingDate.getTime() + t * 60 * 1000);
+    // Include data from outside the chart range
+    const extendedRange = range + 16;
+    const extendedStartingDate = new Date(startingDate);
+    extendedStartingDate.setHours(extendedStartingDate.getHours() - 16);
+
+    return Array.from({ length: extendedRange * 60 }, (_, t) => {
+      const date = new Date(extendedStartingDate.getTime() + t * 60 * 1000);
       return {
         timeStamp: date.toISOString(),
         hourMinStamp: date.toISOString().slice(0, 16),
@@ -90,7 +94,8 @@ export default function Index() {
       }
     });
 
-    return timeline;
+    // Return only the specified range
+    return timeline.slice(-range * 60);
   };
 
   const updateTimeline = async () => {
