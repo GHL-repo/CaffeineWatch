@@ -16,6 +16,7 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { ArrowUturnLeftIcon } from "react-native-heroicons/outline";
 import CaffeineChart from "@/components/CaffeineChart";
 import CafMenu from "@/components/CafMenu";
+import Header from "@/components/Header";
 import TimeSlider from "@/components/TimeSlider";
 import { iconData } from "@/constants/Icons";
 import {
@@ -217,39 +218,9 @@ export default function Index() {
 
   return (
     <GestureHandlerRootView className="bg-white">
-      <View className="flex justify-start h-full p-10 mt-5">
+      <Header />
+      <View className="flex justify-start h-full pl-10 pr-10 pt-3">
         <StatusBar style="auto" />
-
-        <View className="flex flex-row justify-between h-[40px] mb-6">
-          <Link className="" href="/profile" asChild>
-            <Pressable>
-              <Image
-                source={user}
-                className="w-[40px] h-[40px]"
-                resizeMode="contain"
-              />
-            </Pressable>
-          </Link>
-          <Link className="" href="/test" asChild>
-            <Pressable>
-              <Image
-                source={bean}
-                className="w-[40px] h-[40px] opacity-0"
-                resizeMode="contain"
-              />
-            </Pressable>
-          </Link>
-          <Link className="" href="/drinks" asChild>
-            <Pressable>
-              <Image
-                source={coffee}
-                className="w-[40px] h-[40px]"
-                resizeMode="contain"
-              />
-            </Pressable>
-          </Link>
-        </View>
-
         <View className="flex justify-between flex-row">
           <Text className="font-pregular">Current caffeine amount: </Text>
           <Text className="font-pregular ml-12">{mgCount}mg</Text>

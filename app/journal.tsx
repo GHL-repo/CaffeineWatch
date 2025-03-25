@@ -3,7 +3,9 @@ import { FlatList, Text, TouchableOpacity, View } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFocusEffect } from "@react-navigation/native";
 import { TrashIcon } from "react-native-heroicons/outline";
+import Header from "@/components/Header";
 import { useCaffeineStore } from "@/store/store";
+import { StatusBar } from "expo-status-bar";
 
 export default function Profile() {
   const [cafLog, setCafLog] = useState([]);
@@ -65,10 +67,10 @@ export default function Profile() {
   }));
 
   return (
-    <View className="flex-1 items-start justify-start bg-white p-10">
-      <View className="mt-5">
-        <Text className="mb-3 font-bold text-lg">Recent drinks</Text>
-
+    <View>
+      <Header />
+      <View className="h-full bg-white pt-2 pl-10 pr-10">
+        <Text className="text-xl font-bold mb-3">Recent drinks</Text>
         <FlatList
           data={flatListData}
           keyExtractor={(item) => item.date}
