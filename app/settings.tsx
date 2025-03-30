@@ -52,10 +52,10 @@ export default function Profile() {
       <View className="h-full bg-white pt-2 pl-10 pr-10">
         <Text className="text-xl font-bold mb-5">Settings</Text>
 
-        <View className="rounded-lg bg-gray-50 border border-gray-300 px-3 py-[19px] mb-2">
+        <View className="rounded-lg bg-gray-50 border border-gray-300 px-3 py-[22px] mb-2">
           <Link className="" href="/drinks" asChild>
             <Pressable className="flex-row justify-between items-center">
-              <Text className="text-lg font-normal">Customize Drinks Menu</Text>
+              <Text className="text-sm font-normal">Customize Drinks Menu</Text>
               <ChevronRightIcon color="black" fill="white" size={22} />
             </Pressable>
           </Link>
@@ -77,6 +77,34 @@ export default function Profile() {
           <Link className="" href="/settings" asChild>
             <Pressable className="flex-row justify-between items-center">
               <View>
+                <Text className="text-sm font-normal">Max caffeine level</Text>
+                <Text className="text-sm font-normal text-blue-400">
+                  600mg | Warnings: OFF
+                </Text>
+              </View>
+              <ChevronRightIcon color="black" fill="white" size={22} />
+            </Pressable>
+          </Link>
+        </View>
+
+        <View className="rounded-lg bg-gray-50 border border-gray-300 p-3 mb-2">
+          <Link className="" href="/settings" asChild>
+            <Pressable className="flex-row justify-between items-center">
+              <View>
+                <Text className="text-sm font-normal">Bedtime</Text>
+                <Text className="text-sm font-normal text-blue-400">
+                  23:00 | Warnings: OFF
+                </Text>
+              </View>
+              <ChevronRightIcon color="black" fill="white" size={22} />
+            </Pressable>
+          </Link>
+        </View>
+
+        {/* <View className="rounded-lg bg-gray-50 border border-gray-300 p-3 mb-2">
+          <Link className="" href="/settings" asChild>
+            <Pressable className="flex-row justify-between items-center">
+              <View>
                 <Text className="text-sm font-normal">Theme</Text>
                 <Text className="text-sm font-normal text-blue-400">
                   Light (default)
@@ -86,10 +114,17 @@ export default function Profile() {
             </Pressable>
           </Link>
         </View>
-        {/* <Text className="text-sm font-normal mb-1">Timezone</Text> */}
-        {/* <Text className="text-sm font-normal mb-1">Bedtime</Text> */}
 
-        {/* <Text className="text-sm font-normal mb-1">Warning</Text> */}
+        <View className="rounded-lg bg-gray-50 border border-gray-300 px-3 py-[22px] mb-2">
+          <Link className="" href="/settings" asChild>
+            <Pressable className="flex-row justify-between items-center">
+              <Text className="text-sm font-normal">Important Information</Text>
+              <ChevronRightIcon color="black" fill="white" size={22} />
+            </Pressable>
+          </Link>
+        </View> */}
+
+        {/* <Text className="text-sm font-normal mb-1">Timezone</Text> */}
         {/* <Text className="text-sm font-normal mb-1">Day starts at</Text> */}
       </View>
     </View>
