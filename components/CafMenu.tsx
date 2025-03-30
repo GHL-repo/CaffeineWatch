@@ -41,7 +41,7 @@ const CafMenu = ({ cafTypes, iconData, useShowBackBtn }) => {
   };
 
   return (
-    <View className="mt-4">
+    <View className="mt-3 mb-[220px]">
       <View className="flex flex-row flex-wrap justify-between">
         {cafTypes.map((caffeineType, index) => {
           const matchingIcon = iconData.find(
@@ -87,6 +87,10 @@ const CafMenu = ({ cafTypes, iconData, useShowBackBtn }) => {
             </TouchableOpacity>
           );
         })}
+        {/* Fixes justify-between issue with lists */}
+        {cafTypes.length % 3 !== 0 && (
+          <View className="w-[88px] h-[120px] mb-[15px] opacity-0" />
+        )}
       </View>
     </View>
   );

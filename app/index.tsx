@@ -223,9 +223,12 @@ export default function Index() {
         <StatusBar style="auto" />
         <View className="flex justify-between flex-row">
           <Text className="font-pregular">Current caffeine amount: </Text>
-          <Text className="font-pregular ml-12">{mgCount}mg</Text>
+          <Text className="font-pregular">{mgCount}mg</Text>
         </View>
-        <Text className="font-pregular">Optimal sleep after: {sleepTime}</Text>
+        <View className="flex justify-between flex-row">
+          <Text className="font-pregular">Optimal sleep after: </Text>
+          <Text className="font-pregular">{sleepTime}</Text>
+        </View>
 
         {showBackBtn && (
           <View className="flex-row justify-end mt-1 mr-2 -mb-[35px] z-10">
@@ -238,13 +241,17 @@ export default function Index() {
           </View>
         )}
 
-        <View className="h-[200px]">
+        <View className="h-[200px] mt-2">
           <CaffeineChart DATA={cafTimeline} />
         </View>
 
         <TimeSlider />
 
-        <ScrollView style={{ flex: 1 }} contentContainerStyle={{ flexGrow: 1 }}>
+        <ScrollView
+          style={{ flex: 1 }}
+          contentContainerStyle={{ flexGrow: 1 }}
+          showsVerticalScrollIndicator={false}
+        >
           <CafMenu
             cafTypes={cafTypes}
             iconData={iconData}
