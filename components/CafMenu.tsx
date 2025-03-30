@@ -1,7 +1,6 @@
-import React, { useState } from "react";
+import React from "react";
 import { View, Text, Image, TouchableOpacity } from "react-native";
 import bean from "../assets/icons/coffee-bean.png";
-import CafModal from "@/components/CafModal";
 import {
   useTimelineStore,
   useSettingsStore,
@@ -9,39 +8,10 @@ import {
 } from "@/store/store";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const CafMenu = ({
-  cafTypes,
-  iconData,
-  mgCount,
-  setMgCount,
-  useShowBackBtn,
-}) => {
+const CafMenu = ({ cafTypes, iconData, useShowBackBtn }) => {
   const { cafLog, setCafLog } = useTimelineStore();
   const { selectedTime } = useTimeStore();
   const { timeZone } = useSettingsStore();
-
-  // Modal management
-  const [isCafModalVisible, setIsCafModalVisible] = useState(false);
-  const [selectedCaf, setSelectedCaf] = useState(null);
-
-  const openCafModal = (caffeineType) => {
-    setSelectedCaf(caffeineType);
-    setIsCafModalVisible(true);
-  };
-
-  const closeCafModal = () => {
-    setIsCafModalVisible(false);
-    setSelectedCaf(null);
-  };
-
-  const confirmCaffeine = () => {
-    if (selectedCaf) {
-      const { name, mgPerCup } = selectedCaf;
-      setMgCount((prevMgCount) => prevMgCount + mgPerCup);
-      handleAddCafLog(name, mgPerCup);
-    }
-    closeCafModal();
-  };
 
   const handleAddCafLog = (name, amount) => {
     const selectedTimeCopy = new Date(selectedTime);
@@ -83,10 +53,7 @@ const CafMenu = ({
               key={index}
               className="w-[88px] h-[120px] mb-[15px] rounded-lg bg-gray-50 items-center justify-center border border-gray-300"
               onPress={() =>
-                openCafModal({
-                  name: caffeineType.name,
-                  mgPerCup: caffeineType.mgPerCup,
-                })
+                handleAddCafLog(caffeineType.name, caffeineType.mgPerCup)
               }
             >
               {matchingIcon ? (
@@ -121,22 +88,6 @@ const CafMenu = ({
           );
         })}
       </View>
-      <CafModal
-        isVisible={isCafModalVisible}
-        onClose={closeCafModal}
-        onConfirm={confirmCaffeine}
-      >
-        {selectedCaf && (
-          <View>
-            <Text className="text-lg font-semibold mb-3">
-              {selectedCaf.name}
-            </Text>
-            <Text className="text-lg font-semibold mb-3">
-              ({selectedCaf.mgPerCup} mg of caffeine)
-            </Text>
-          </View>
-        )}
-      </CafModal>
     </View>
   );
 };
