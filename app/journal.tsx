@@ -5,15 +5,24 @@ import { useFocusEffect } from "@react-navigation/native";
 import { TrashIcon } from "react-native-heroicons/outline";
 import { PencilSquareIcon } from "react-native-heroicons/outline";
 import Header from "@/components/Header";
-import { useCaffeineStore } from "@/store/store";
+import {
+  useTimelineStore,
+  useTimeStore,
+  useDrinkStore,
+  useSettingsStore,
+} from "@/store/store";
 import CafDelModal from "@/components/CafDelModal";
+import LogModal from "@/components/LogModal";
 
 export default function Profile() {
-  const [cafLog, setCafLog] = useState([]);
-  const { cafTypes, setCafTypes } = useCaffeineStore();
+  const { cafLog, setCafLog } = useTimelineStore();
+  const { selectedTime } = useTimeStore();
+  const { selectedDrink } = useDrinkStore();
+  const { timeZone } = useSettingsStore();
 
   // Modal management
   const [isCafModalVisible, setIsCafModalVisible] = useState(false);
+  const [editModalOpen, setEditModalOpen] = useState(false);
   const [selectedCaf, setSelectedCaf] = useState(null);
 
   const openCafModal = (drink) => {
@@ -26,13 +35,12 @@ export default function Profile() {
     setSelectedCaf(null);
   };
 
-  const confirmDelete = () => {
-    if (selectedCaf) {
-      const { name, mgPerCup } = selectedCaf;
-      setMgCount((prevMgCount) => prevMgCount + mgPerCup);
-      handleAddCafLog(name, mgPerCup);
-    }
-    closeCafModal();
+  const openLogModal = () => {
+    setEditModalOpen(true);
+  };
+
+  const closeLogModal = () => {
+    setEditModalOpen(false);
   };
 
   // AsyncStore functions
@@ -56,6 +64,30 @@ export default function Profile() {
     }
   };
 
+  // Add and remove drinks
+  const handleAddDrink = () => {
+    if (!selectedDrink || Object.keys(selectedDrink).length === 0) {
+      alert("Please select a drink");
+      return;
+    }
+
+    // Create timestamp based on selectedTime
+    const selectedTimeCopy = new Date(selectedTime);
+    selectedTimeCopy.setHours(selectedTimeCopy.getHours() + timeZone + 1);
+    const timeStamp = selectedTimeCopy.toISOString();
+
+    const newDrink = {
+      timeStamp: timeStamp,
+      nameOfDrink: selectedDrink.name, // Map name to nameOfDrink
+      amountOfMg: selectedDrink.mgPerCup, // Map mgPerCup to amountOfMg
+    };
+
+    // Update both local state and store
+    const updatedCafLog = [...cafLog, newDrink];
+    setCafLog(updatedCafLog); // Update local state
+    storeCafLog(updatedCafLog); // Store in AsyncStorage
+  };
+
   const deleteCafLogEntry = (id) => {
     setCafLog((prevCafLog) => {
       const newCafLog = prevCafLog.filter((item) => item.timeStamp !== id);
@@ -64,12 +96,7 @@ export default function Profile() {
     });
   };
 
-  useFocusEffect(
-    useCallback(() => {
-      getCafLog();
-    }, []),
-  );
-
+  //Render functions for Flatlist
   const groupByDate = (data) => {
     return data.reduce((acc, item) => {
       const date = item.timeStamp.slice(5, 10); // MM-DD
@@ -81,7 +108,6 @@ export default function Profile() {
     }, {});
   };
 
-  // Group the data by date
   const groupedData = groupByDate([...cafLog].reverse());
 
   // Flatten grouped data into an array suitable for FlatList
@@ -90,23 +116,30 @@ export default function Profile() {
     drinks: [...drinks].reverse(),
   }));
 
+  useFocusEffect(
+    useCallback(() => {
+      getCafLog();
+    }, []),
+  );
+
   return (
     <View>
       <Header />
       <View className="h-full bg-white pt-2 pl-10 pr-10">
         <View className="flex-row justify-between w-full mb-2">
           <Text className="text-xl font-bold mb-3">Recent drinks</Text>
-          <TouchableOpacity onPress={() => console.log("pressed edit button")}>
+          <TouchableOpacity onPress={() => openLogModal()}>
             <PencilSquareIcon color="black" fill="white" size={30} />
           </TouchableOpacity>
         </View>
+
         <FlatList
           data={flatListData}
           keyExtractor={(item) => item.date}
+          ListEmptyComponent={() => <Text>No recent drinks found.</Text>}
           renderItem={({ item }) => (
             <View className="mb-4 w-full">
               {/* Display date */}
-
               <Text className="text-lg font-psemibold">{item.date}</Text>
 
               {/* Render drinks under the date */}
@@ -124,7 +157,7 @@ export default function Profile() {
                       onPress={() =>
                         openCafModal({
                           name: drink.nameOfDrink,
-                          mgPerCup: drink.mgPerCup,
+                          amountOfMg: drink.amountOfMg,
                           id: drink.timeStamp,
                         })
                       }
@@ -141,10 +174,8 @@ export default function Profile() {
         isVisible={isCafModalVisible}
         onClose={closeCafModal}
         onConfirm={() => {
-          if (selectedCaf) {
-            deleteCafLogEntry(selectedCaf.id);
-            closeCafModal();
-          }
+          deleteCafLogEntry(selectedCaf.id);
+          closeCafModal();
         }}
       >
         {selectedCaf && (
@@ -156,6 +187,14 @@ export default function Profile() {
           </View>
         )}
       </CafDelModal>
+      <LogModal
+        isVisible={editModalOpen}
+        onClose={closeLogModal}
+        onConfirm={() => {
+          handleAddDrink();
+          closeLogModal();
+        }}
+      ></LogModal>
     </View>
   );
 }

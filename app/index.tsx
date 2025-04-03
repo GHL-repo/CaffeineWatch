@@ -197,6 +197,7 @@ export default function Index() {
   // Effect hooks
   useEffect(() => {
     updateTimeline();
+    // resetLog();
   }, [cafLog]);
 
   useEffect(() => {

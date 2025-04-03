@@ -2,7 +2,7 @@ import { View } from "react-native";
 import { Link } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { Image, Pressable } from "react-native";
-import bean from "../assets/icons/coffee-bean.png";
+
 import checklist from "../assets/icons/checklist.png";
 import settings from "../assets/icons/settings.png";
 import chart from "../assets/icons/curve.png";
