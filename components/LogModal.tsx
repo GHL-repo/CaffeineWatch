@@ -1,6 +1,5 @@
 import React from "react";
 import { Modal, View, Text, TouchableOpacity } from "react-native";
-
 import TimeSlider from "@/components/TimeSlider";
 import LogDropDown from "@/components/LogDropDown";
 import { GestureHandlerRootView } from "react-native-gesture-handler";

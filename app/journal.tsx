@@ -4,6 +4,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFocusEffect } from "@react-navigation/native";
 import { TrashIcon } from "react-native-heroicons/outline";
 import { PencilSquareIcon } from "react-native-heroicons/outline";
+
 import Header from "@/components/Header";
 import {
   useTimelineStore,
@@ -15,6 +16,8 @@ import CafDelModal from "@/components/CafDelModal";
 import LogModal from "@/components/LogModal";
 
 export default function Profile() {
+  const [date, setDate] = useState(new Date());
+
   const { cafLog, setCafLog } = useTimelineStore();
   const { selectedTime } = useTimeStore();
   const { selectedDrink } = useDrinkStore();
@@ -64,7 +67,7 @@ export default function Profile() {
     }
   };
 
-  // Add and remove drinks
+  // Add & Delete drinks
   const handleAddDrink = () => {
     if (!selectedDrink || Object.keys(selectedDrink).length === 0) {
       alert("Please select a drink");
@@ -78,22 +81,27 @@ export default function Profile() {
 
     const newDrink = {
       timeStamp: timeStamp,
-      nameOfDrink: selectedDrink.name, // Map name to nameOfDrink
-      amountOfMg: selectedDrink.mgPerCup, // Map mgPerCup to amountOfMg
+      nameOfDrink: selectedDrink.name,
+      amountOfMg: selectedDrink.mgPerCup,
     };
 
-    // Update both local state and store
     const updatedCafLog = [...cafLog, newDrink];
-    setCafLog(updatedCafLog); // Update local state
-    storeCafLog(updatedCafLog); // Store in AsyncStorage
+    setCafLog(updatedCafLog);
+    storeCafLog(updatedCafLog);
   };
 
-  const deleteCafLogEntry = (id) => {
-    setCafLog((prevCafLog) => {
-      const newCafLog = prevCafLog.filter((item) => item.timeStamp !== id);
-      storeCafLog(newCafLog);
-      return newCafLog;
-    });
+  const deleteCafLogEntry = async (id) => {
+    try {
+      setCafLog((prevCafLog) => {
+        const newCafLog = prevCafLog.filter((item) => item.timeStamp !== id);
+        storeCafLog(newCafLog).catch((err) =>
+          console.error("Error storing cafLog:", err),
+        );
+        return newCafLog;
+      });
+    } catch (err) {
+      console.error("Error deleting cafLog entry:", err);
+    }
   };
 
   //Render functions for Flatlist
@@ -108,13 +116,12 @@ export default function Profile() {
     }, {});
   };
 
-  const groupedData = groupByDate([...cafLog].reverse());
-
-  // Flatten grouped data into an array suitable for FlatList
-  const flatListData = Object.entries(groupedData).map(([date, drinks]) => ({
-    date,
-    drinks: [...drinks].reverse(),
-  }));
+  const flatListData = Object.entries(groupByDate([...cafLog].reverse())).map(
+    ([date, drinks]) => ({
+      date,
+      drinks: [...drinks].reverse(),
+    }),
+  );
 
   useFocusEffect(
     useCallback(() => {
@@ -174,7 +181,8 @@ export default function Profile() {
         isVisible={isCafModalVisible}
         onClose={closeCafModal}
         onConfirm={() => {
-          deleteCafLogEntry(selectedCaf.id);
+          // deleteCafLogEntry(selectedCaf.id);
+          console.log(selectedCaf.id);
           closeCafModal();
         }}
       >
