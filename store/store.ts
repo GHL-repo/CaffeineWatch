@@ -1,4 +1,6 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { create } from "zustand";
+import { persist, createJSONStorage } from "zustand/middleware";
 import data from "../src/data";
 
 type CaffeineStore = {
@@ -36,20 +38,44 @@ export const useTimelineStore = create<TimelineStore>((set) => ({
 type SettingsStore = {
   threshold: number;
   timeZone: number;
+  maxCafLevel: number;
+  bedtime: Date;
   setThreshold: (newThreshold: number) => void;
   setTimeZone: (newTimeZone: number) => void;
+  setMaxCafLevel: (newMaxCafLevel: number) => void;
+  setBedtime: (newBedtime: Date) => void;
 };
 
-export const useSettingsStore = create<SettingsStore>((set) => ({
-  threshold: 100,
-  timeZone: 1,
-  setThreshold: (newThreshold: number) => {
-    set({ threshold: newThreshold });
-  },
-  setTimeZone: (newTimeZone: number) => {
-    set({ threshold: newTimeZone });
-  },
-}));
+export const useSettingsStore = create(
+  persist(
+    (set) => ({
+      threshold: 100,
+      timeZone: 1,
+      maxCafLevel: 600,
+      warnings: false,
+      bedtime: new Date(new Date().setHours(23, 0, 0, 0)),
+      setThreshold: (newThreshold: number) => {
+        set({ threshold: newThreshold });
+      },
+      setTimeZone: (newTimeZone: number) => {
+        set({ threshold: newTimeZone });
+      },
+      setMaxCafLevel: (newMaxCafLevel: number) => {
+        set({ maxCafLevel: newMaxCafLevel });
+      },
+      setWarnings: (newWarnings: boolean) => {
+        set({ warnings: newWarnings });
+      },
+      setBedtime: (newBedtime: Date) => {
+        set({ bedtime: newBedtime });
+      },
+    }),
+    {
+      name: "settings-storage",
+      storage: createJSONStorage(() => AsyncStorage),
+    },
+  ),
+);
 
 type TimeStore = {
   selectedTime: Date;

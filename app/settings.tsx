@@ -1,49 +1,32 @@
-import React, { useEffect, useState, useCallback } from "react";
-import {
-  Text,
-  TextInput,
-  View,
-  Image,
-  FlatList,
-  Alert,
-  Modal,
-  TouchableOpacity,
-} from "react-native";
-import { useFocusEffect } from "@react-navigation/native";
-import data from "../src/data";
-import DrinksListEl from "@/components/DrinksListEl";
+import React, { useState } from "react";
+import { Text, View } from "react-native";
 import Header from "@/components/Header";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import Ionicons from "@expo/vector-icons/Ionicons";
-import { iconData } from "../constants/Icons";
-import DraggableFlatList, {
-  OpacityDecorator,
-  RenderItemParams,
-} from "react-native-draggable-flatlist";
-import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { Pressable } from "react-native";
 import { Link } from "expo-router";
-import coffee from "../assets/icons/coffee-shop.png";
 import { ChevronRightIcon } from "react-native-heroicons/outline";
+import SettingsModal from "@/components/SettingsModal";
+import { useSettingsStore } from "@/store/store";
 
-export default function Profile() {
-  const [cafTypes, setCafTypes] = useState(data.caffeineTypes);
-  const [cafName, setCafName] = useState();
-  const [cafMg, setCafMg] = useState();
-  const [cafIcon, setCafIcon] = useState("coffeeDefault");
-  const [curEditId, setCurEditId] = useState();
-  const [modalOpen, setModalOpen] = useState(false);
-  const [editModalOpen, setEditModalOpen] = useState(false);
+export default function Settings() {
+  const {
+    threshold,
+    maxCafLevel,
+    warnings,
+    // bedtime,
+    setThreshold,
+    setMaxCafLevel,
+    setWarnings,
+    // setBedtime,
+  } = useSettingsStore();
 
-  useEffect(() => {
-    // ...
-  }, []);
-
-  useFocusEffect(
-    useCallback(() => {
-      // ...
-    }, []),
-  );
+  const [settingsValues, setSettingsValues] = useState({
+    warnings: warnings,
+    caffeine_tolerance: threshold,
+    maxcaffeinelevel: maxCafLevel,
+  });
+  const [openModal, setOpenModal] = useState<
+    null | "caftolerance" | "maxcaflevel" | "bedtime"
+  >(null);
 
   return (
     <View>
@@ -63,10 +46,15 @@ export default function Profile() {
 
         <View className="rounded-lg bg-gray-50 border border-gray-300 p-3 mb-2">
           <Link className="" href="/settings" asChild>
-            <Pressable className="flex-row justify-between items-center">
+            <Pressable
+              className="flex-row justify-between items-center"
+              onPress={() => setOpenModal("caftolerance")}
+            >
               <View>
                 <Text className="text-sm font-normal">Caffeine Tolerance</Text>
-                <Text className="text-sm font-normal text-blue-400">100mg</Text>
+                <Text className="text-sm font-normal text-blue-400">
+                  {threshold}mg
+                </Text>
               </View>
               <ChevronRightIcon color="black" fill="white" size={22} />
             </Pressable>
@@ -75,11 +63,15 @@ export default function Profile() {
 
         <View className="rounded-lg bg-gray-50 border border-gray-300 p-3 mb-2">
           <Link className="" href="/settings" asChild>
-            <Pressable className="flex-row justify-between items-center">
+            <Pressable
+              className="flex-row justify-between items-center"
+              onPress={() => setOpenModal("maxcaflevel")}
+            >
               <View>
                 <Text className="text-sm font-normal">Max caffeine level</Text>
                 <Text className="text-sm font-normal text-blue-400">
-                  600mg | Warnings: OFF
+                  {maxCafLevel}mg | Warnings:{" "}
+                  {settingsValues.warnings ? "ON" : "OFF"}
                 </Text>
               </View>
               <ChevronRightIcon color="black" fill="white" size={22} />
@@ -87,45 +79,53 @@ export default function Profile() {
           </Link>
         </View>
 
-        <View className="rounded-lg bg-gray-50 border border-gray-300 p-3 mb-2">
-          <Link className="" href="/settings" asChild>
-            <Pressable className="flex-row justify-between items-center">
-              <View>
-                <Text className="text-sm font-normal">Bedtime</Text>
-                <Text className="text-sm font-normal text-blue-400">
-                  23:00 | Warnings: OFF
-                </Text>
-              </View>
-              <ChevronRightIcon color="black" fill="white" size={22} />
-            </Pressable>
-          </Link>
-        </View>
+        <SettingsModal
+          visible={openModal === "caftolerance"}
+          title="Caffeine Tolerance"
+          fields={[
+            {
+              name: "caffeine_tolerance",
+              label: "Caffeine Tolerance (mg)",
+              type: "numeric",
+            },
+          ]}
+          values={settingsValues}
+          onChange={(name, value) =>
+            setSettingsValues((prev) => ({ ...prev, [name]: value }))
+          }
+          onSave={() => {
+            setThreshold(settingsValues.caffeine_tolerance);
+            setOpenModal(null);
+          }}
+          onCancel={() => setOpenModal(null)}
+        />
 
-        {/* <View className="rounded-lg bg-gray-50 border border-gray-300 p-3 mb-2">
-          <Link className="" href="/settings" asChild>
-            <Pressable className="flex-row justify-between items-center">
-              <View>
-                <Text className="text-sm font-normal">Theme</Text>
-                <Text className="text-sm font-normal text-blue-400">
-                  Light (default)
-                </Text>
-              </View>
-              <ChevronRightIcon color="black" fill="white" size={22} />
-            </Pressable>
-          </Link>
-        </View>
-
-        <View className="rounded-lg bg-gray-50 border border-gray-300 px-3 py-[22px] mb-2">
-          <Link className="" href="/settings" asChild>
-            <Pressable className="flex-row justify-between items-center">
-              <Text className="text-sm font-normal">Important Information</Text>
-              <ChevronRightIcon color="black" fill="white" size={22} />
-            </Pressable>
-          </Link>
-        </View> */}
-
-        {/* <Text className="text-sm font-normal mb-1">Timezone</Text> */}
-        {/* <Text className="text-sm font-normal mb-1">Day starts at</Text> */}
+        <SettingsModal
+          visible={openModal === "maxcaflevel"}
+          title="Max Caffeine Level"
+          fields={[
+            {
+              name: "maxcaffeinelevel",
+              label: "Max Caffeine Level (mg)",
+              type: "numeric",
+            },
+            {
+              name: "warnings",
+              label: "Warnings",
+              type: "switch",
+            },
+          ]}
+          values={settingsValues}
+          onChange={(name, value) =>
+            setSettingsValues((prev) => ({ ...prev, [name]: value }))
+          }
+          onSave={() => {
+            setMaxCafLevel(settingsValues.maxcaffeinelevel);
+            setWarnings(settingsValues.warnings);
+            setOpenModal(null);
+          }}
+          onCancel={() => setOpenModal(null)}
+        />
       </View>
     </View>
   );
