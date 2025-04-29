@@ -1,5 +1,12 @@
 import React from "react";
-import { Modal, View, Text, TextInput, Button, Switch } from "react-native";
+import {
+  Modal,
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  Switch,
+} from "react-native";
 
 type Field = {
   name: string;
@@ -28,25 +35,9 @@ const SettingsModal = ({
 }: SettingsModalProps) => {
   return (
     <Modal visible={visible} transparent animationType="slide">
-      <View
-        style={{
-          flex: 1,
-          backgroundColor: "#00000088",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <View
-          style={{
-            backgroundColor: "white",
-            padding: 20,
-            borderRadius: 10,
-            width: "80%",
-          }}
-        >
-          <Text style={{ fontSize: 20, fontWeight: "bold", marginBottom: 20 }}>
-            {title}
-          </Text>
+      <View className="flex-1 bg-black/50 justify-center items-center">
+        <View className="bg-white p-5 rounded-lg w-4/5">
+          <Text className="text-xl font-bold mb-5">{title}</Text>
 
           {fields.map((field) => {
             const renderInput = () => {
@@ -59,7 +50,7 @@ const SettingsModal = ({
                         field.type === "numeric" ? Number(text) : text;
                       onChange(field.name, newValue);
                     }}
-                    style={{ borderWidth: 1, padding: 8, borderRadius: 5 }}
+                    className="border border-gray-300 p-2 rounded"
                     keyboardType={
                       field.type === "numeric" ? "numeric" : "default"
                     }
@@ -80,22 +71,29 @@ const SettingsModal = ({
             };
 
             return (
-              <View key={field.name} style={{ marginBottom: 15 }}>
-                <Text style={{ marginBottom: 5 }}>{field.label}</Text>
+              <View key={field.name} className="mb-4">
+                <Text className="mb-1">{field.label}</Text>
                 {renderInput()}
               </View>
             );
           })}
 
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              marginTop: 20,
-            }}
-          >
-            <Button title="Cancel" onPress={onCancel} />
-            <Button title="Save" onPress={onSave} />
+          <View className="flex-row justify-between mt-5">
+            <TouchableOpacity
+              onPress={onCancel}
+              className="p-2 bg-purple-600 rounded-lg flex-1 mr-2"
+            >
+              <Text className="text-center text-white font-semibold">
+                Cancel
+              </Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              onPress={onSave}
+              className="p-2 bg-blue-600 rounded-lg flex-1 ml-2"
+            >
+              <Text className="text-center text-white font-semibold">Save</Text>
+            </TouchableOpacity>
           </View>
         </View>
       </View>

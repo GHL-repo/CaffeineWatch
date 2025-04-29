@@ -67,14 +67,12 @@ export default function Profile() {
     }
   };
 
-  // Add & Delete drinks
   const handleAddDrink = () => {
     if (!selectedDrink || Object.keys(selectedDrink).length === 0) {
       alert("Please select a drink");
       return;
     }
 
-    // Create timestamp based on selectedTime
     const selectedTimeCopy = new Date(selectedTime);
     selectedTimeCopy.setHours(selectedTimeCopy.getHours() + timeZone + 1);
     const timeStamp = selectedTimeCopy.toISOString();
@@ -181,7 +179,7 @@ export default function Profile() {
         isVisible={isCafModalVisible}
         onClose={closeCafModal}
         onConfirm={() => {
-          // deleteCafLogEntry(selectedCaf.id);
+          deleteCafLogEntry(selectedCaf.id);
           console.log(selectedCaf.id);
           closeCafModal();
         }}

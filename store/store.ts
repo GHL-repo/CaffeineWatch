@@ -35,16 +35,16 @@ export const useTimelineStore = create<TimelineStore>((set) => ({
   },
 }));
 
-type SettingsStore = {
-  threshold: number;
-  timeZone: number;
-  maxCafLevel: number;
-  bedtime: Date;
-  setThreshold: (newThreshold: number) => void;
-  setTimeZone: (newTimeZone: number) => void;
-  setMaxCafLevel: (newMaxCafLevel: number) => void;
-  setBedtime: (newBedtime: Date) => void;
-};
+// type SettingsStore = {
+//   threshold: number;
+//   timeZone: number;
+//   maxCafLevel: number;
+//   bedtime: Date;
+//   setThreshold: (newThreshold: number) => void;
+//   setTimeZone: (newTimeZone: number) => void;
+//   setMaxCafLevel: (newMaxCafLevel: number) => void;
+//   setBedtime: (newBedtime: Date) => void;
+// };
 
 export const useSettingsStore = create(
   persist(
