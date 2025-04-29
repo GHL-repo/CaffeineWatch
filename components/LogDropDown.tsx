@@ -50,7 +50,6 @@ const LogDropDown = () => {
       onChange={(item) => {
         setValue(item.id);
         setSelectedDrink(item);
-        console.log(item);
       }}
       renderItem={renderItem}
     />

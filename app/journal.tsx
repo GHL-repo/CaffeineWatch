@@ -19,7 +19,7 @@ export default function Profile() {
 
   const { cafLog, setCafLog } = useTimelineStore();
   const { selectedTime } = useTimeStore();
-  const { selectedDrink } = useDrinkStore();
+  const { selectedDrink, setSelectedDrink } = useDrinkStore();
   const { timeZone } = useSettingsStore();
 
   // Modal management
@@ -85,6 +85,7 @@ export default function Profile() {
     const updatedCafLog = [...cafLog, newDrink];
     setCafLog(updatedCafLog);
     storeCafLog(updatedCafLog);
+    setSelectedDrink("");
   };
 
   const deleteCafLogEntry = async (idToDelete: string) => {
