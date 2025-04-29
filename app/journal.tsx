@@ -4,7 +4,6 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFocusEffect } from "@react-navigation/native";
 import { TrashIcon } from "react-native-heroicons/outline";
 import { PencilSquareIcon } from "react-native-heroicons/outline";
-
 import Header from "@/components/Header";
 import {
   useTimelineStore,
@@ -88,17 +87,18 @@ export default function Profile() {
     storeCafLog(updatedCafLog);
   };
 
-  const deleteCafLogEntry = async (id) => {
+  const deleteCafLogEntry = async (idToDelete: string) => {
     try {
-      setCafLog((prevCafLog) => {
-        const newCafLog = prevCafLog.filter((item) => item.timeStamp !== id);
-        storeCafLog(newCafLog).catch((err) =>
-          console.error("Error storing cafLog:", err),
-        );
-        return newCafLog;
-      });
-    } catch (err) {
-      console.error("Error deleting cafLog entry:", err);
+      const updatedCafLog = cafLog.filter(
+        (item) => item.timeStamp !== idToDelete,
+      );
+      setCafLog(updatedCafLog);
+      await AsyncStorage.setItem(
+        "@cafLogStorage",
+        JSON.stringify(updatedCafLog),
+      );
+    } catch (error) {
+      console.error("Failed to delete entry:", error);
     }
   };
 
@@ -180,7 +180,6 @@ export default function Profile() {
         onClose={closeCafModal}
         onConfirm={() => {
           deleteCafLogEntry(selectedCaf.id);
-          console.log(selectedCaf.id);
           closeCafModal();
         }}
       >
