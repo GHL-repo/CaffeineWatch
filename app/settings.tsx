@@ -1,9 +1,8 @@
 import React, { useState } from "react";
-import { Text, View } from "react-native";
-import Header from "@/components/Header";
-import { Pressable } from "react-native";
-import { Link } from "expo-router";
+import { Text, TouchableOpacity, View } from "react-native";
 import { ChevronRightIcon } from "react-native-heroicons/outline";
+import { Link } from "expo-router";
+import Header from "@/components/Header";
 import SettingsModal from "@/components/SettingsModal";
 import { useSettingsStore } from "@/store/store";
 
@@ -12,11 +11,9 @@ export default function Settings() {
     threshold,
     maxCafLevel,
     warnings,
-    // bedtime,
     setThreshold,
     setMaxCafLevel,
     setWarnings,
-    // setBedtime,
   } = useSettingsStore();
 
   const [settingsValues, setSettingsValues] = useState({
@@ -37,16 +34,16 @@ export default function Settings() {
 
         <View className="rounded-lg bg-gray-50 border border-gray-300 px-3 py-[22px] mb-2">
           <Link className="" href="/drinks" asChild>
-            <Pressable className="flex-row justify-between items-center">
+            <TouchableOpacity className="flex-row justify-between items-center">
               <Text className="text-sm font-normal">Customize Drinks Menu</Text>
               <ChevronRightIcon color="black" fill="white" size={22} />
-            </Pressable>
+            </TouchableOpacity>
           </Link>
         </View>
 
         <View className="rounded-lg bg-gray-50 border border-gray-300 p-3 mb-2">
           <Link className="" href="/settings" asChild>
-            <Pressable
+            <TouchableOpacity
               className="flex-row justify-between items-center"
               onPress={() => setOpenModal("caftolerance")}
             >
@@ -57,13 +54,13 @@ export default function Settings() {
                 </Text>
               </View>
               <ChevronRightIcon color="black" fill="white" size={22} />
-            </Pressable>
+            </TouchableOpacity>
           </Link>
         </View>
 
         <View className="rounded-lg bg-gray-50 border border-gray-300 p-3 mb-2">
           <Link className="" href="/settings" asChild>
-            <Pressable
+            <TouchableOpacity
               className="flex-row justify-between items-center"
               onPress={() => setOpenModal("maxcaflevel")}
             >
@@ -75,7 +72,7 @@ export default function Settings() {
                 </Text>
               </View>
               <ChevronRightIcon color="black" fill="white" size={22} />
-            </Pressable>
+            </TouchableOpacity>
           </Link>
         </View>
 
