@@ -8,16 +8,18 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useFocusEffect } from "@react-navigation/native";
 import DraggableFlatList, {
   OpacityDecorator,
   RenderItemParams,
 } from "react-native-draggable-flatlist";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import Ionicons from "@expo/vector-icons/Ionicons";
-import { useFocusEffect } from "@react-navigation/native";
+
 import DrinksListEl from "@/components/DrinksListEl";
 import Header from "@/components/Header";
+
 import { iconData } from "../constants/Icons";
 import data from "../src/data";
 
@@ -150,12 +152,13 @@ export default function Profile() {
             <TouchableOpacity
               onPress={() => {
                 setCafName("");
+                setCafMg(null);
                 setCafIcon("coffeeDefault");
                 setModalOpen(true);
               }}
             >
               <Text className="text-lg rounded bg-gray-50 border border-gray-300 px-2">
-                Create
+                + Create
               </Text>
             </TouchableOpacity>
           </View>
@@ -181,7 +184,7 @@ export default function Profile() {
 
                 <View className="rounded-lg bg-gray-50 border border-gray-300 mb-2">
                   <Text className="mb-1 px-3 py-1 font-bold border-b border-gray-300">
-                    Mg of caffeine per cup
+                    Caffeine per cup (mg)
                   </Text>
                   <TextInput
                     className="text-bold text-black pl-3 pt-1"
@@ -195,7 +198,7 @@ export default function Profile() {
                 <View>
                   <View className="rounded-lg bg-gray-50 border border-gray-300 mb-2">
                     <Text className="mb-1 px-3 py-1 font-bold border-b border-gray-300">
-                      Icon:
+                      Icon
                     </Text>
                     <View className="flex flex-wrap flex-row justify-between p-3 pt-4 pb-1">
                       {iconData.map((item) => (
@@ -271,7 +274,7 @@ export default function Profile() {
 
                 <View className="rounded-lg bg-gray-50 border border-gray-300 mb-2">
                   <Text className="mb-1 px-3 py-1 font-bold border-b border-gray-300">
-                    Mg of caffeine per cup
+                    Caffeine per cup (mg)
                   </Text>
                   <TextInput
                     className="text-bold text-black pl-3 pt-1"
@@ -285,7 +288,7 @@ export default function Profile() {
                 <View>
                   <View className="rounded-lg bg-gray-50 border border-gray-300 mb-2">
                     <Text className="mb-1 px-3 py-1 font-bold border-b border-gray-300">
-                      Icon:
+                      Icon
                     </Text>
                     <View className="flex flex-wrap flex-row justify-between p-3 pt-4 pb-1">
                       {iconData.map((item) => (
