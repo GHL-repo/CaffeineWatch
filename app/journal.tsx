@@ -11,7 +11,7 @@ import {
   useDrinkStore,
   useSettingsStore,
 } from "@/store/store";
-import CafDelModal from "@/components/CafDelModal";
+import DeleteModal from "@/components/DeleteModal";
 import LogModal from "@/components/LogModal";
 
 export default function Profile() {
@@ -176,7 +176,7 @@ export default function Profile() {
           )}
         />
       </View>
-      <CafDelModal
+      <DeleteModal
         isVisible={isCafModalVisible}
         onClose={closeCafModal}
         onConfirm={() => {
@@ -192,7 +192,7 @@ export default function Profile() {
             </Text>
           </View>
         )}
-      </CafDelModal>
+      </DeleteModal>
       <LogModal
         isVisible={editModalOpen}
         onClose={closeLogModal}

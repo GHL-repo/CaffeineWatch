@@ -1,7 +1,7 @@
 import React from "react";
 import { Modal, View, Text, TouchableOpacity } from "react-native";
 
-const CafDelModal = ({ isVisible, onClose, onConfirm, children }) => {
+const DeleteModal = ({ isVisible, onClose, onConfirm, children }) => {
   return (
     <Modal
       animationType="slide"
@@ -41,4 +41,4 @@ const CafDelModal = ({ isVisible, onClose, onConfirm, children }) => {
   );
 };
 
-export default CafDelModal;
+export default DeleteModal;
