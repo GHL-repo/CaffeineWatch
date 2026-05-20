@@ -3,7 +3,14 @@ import { Link } from "expo-router";
 
 export default function Index() {
   return (
-    <View style={{ flex: 1, justifyContent: "center", alignItems: "center", gap: 16 }}>
+    <View
+      style={{
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        gap: 16,
+      }}
+    >
       <Text style={{ fontSize: 20, fontWeight: "600" }}>Home</Text>
 
       <Link href="/drinks" asChild>
